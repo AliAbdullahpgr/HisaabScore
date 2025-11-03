@@ -77,12 +77,25 @@ export default function DashboardPage() {
 
     // Calculate credit score
     const creditFactors = analyzeTransactionsForCreditScore(transactions);
+    
+    // Debug: Log the individual factors
+    console.log('Credit Factors:', {
+      billPaymentHistory: creditFactors.billPaymentHistory,
+      incomeConsistency: creditFactors.incomeConsistency,
+      expenseManagement: creditFactors.expenseManagement,
+      financialGrowth: creditFactors.financialGrowth,
+      transactionDiversity: creditFactors.transactionDiversity,
+      totalIncome,
+      totalExpense,
+      expenseRatio: totalExpense / totalIncome
+    });
+    
     const creditScore = Math.round(
-      creditFactors.billPaymentHistory * 0.30 +
+      (creditFactors.billPaymentHistory * 0.30 +
       creditFactors.incomeConsistency * 0.25 +
       creditFactors.expenseManagement * 0.20 +
       creditFactors.financialGrowth * 0.15 +
-      creditFactors.transactionDiversity * 0.10
+      creditFactors.transactionDiversity * 0.10) * 10
     );
 
     // Income vs Expense by month
@@ -271,16 +284,16 @@ export default function DashboardPage() {
       {/* Credit Score Gauge */}
       <Card>
         <CardHeader>
-          <CardTitle>Alternative Credit Score</CardTitle>
+          <CardTitle>Credit Score</CardTitle>
           <CardDescription>
-            For informal economy workers • Updated: {new Date().toLocaleDateString()}
+           • Updated: {new Date().toLocaleDateString()}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-center py-8">
           <ScoreGauge value={creditScore} />
         </CardContent>
         <div className="px-6 pb-4 text-xs text-muted-foreground text-center">
-          Not a FICO score. Designed for workers without traditional credit.
+        Designed for workers without traditional credit.
         </div>
       </Card>
 
@@ -327,13 +340,11 @@ export default function DashboardPage() {
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    labelLine={false}
-                    label={(entry) => entry.name}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {categoryData.map((entry, index) => (
+                    {categoryData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
