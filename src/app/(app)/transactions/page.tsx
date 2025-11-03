@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Card,
@@ -40,7 +40,7 @@ import { collection } from 'firebase/firestore';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
 import { Loader2 } from 'lucide-react';
 
-export default function TransactionsPage() {
+function TransactionsPageContent() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -53,10 +53,7 @@ export default function TransactionsPage() {
   const { data: transactions, isLoading: transactionsLoading } = useCollection<Transaction>(transactionsQuery);
   
   // Pagination state - default to page 1
-  const [currentPage, setCurrentPage] = useState(() => {
-    const pageParam = searchParams.get('page');
-    return pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
-  });
+  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -115,15 +112,26 @@ export default function TransactionsPage() {
     setCurrentPage(1);
   }, [searchTerm, filterType, filterCategory]);
 
+  // Initialize page from URL params after component mounts
+  useEffect(() => {
+    const pageParam = searchParams.get('page');
+    if (pageParam) {
+      const page = Math.max(1, parseInt(pageParam, 10));
+      setCurrentPage(page);
+    }
+  }, [searchParams]);
+
   // Update URL when page changes
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (currentPage > 1) {
-      params.set('page', currentPage.toString());
-    } else {
-      params.delete('page');
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(searchParams.toString());
+      if (currentPage > 1) {
+        params.set('page', currentPage.toString());
+      } else {
+        params.delete('page');
+      }
+      router.replace(`/transactions?${params.toString()}`, { scroll: false });
     }
-    router.replace(`/transactions?${params.toString()}`, { scroll: false });
   }, [currentPage, router, searchParams]);
 
   const handlePageChange = (page: number) => {
@@ -366,5 +374,17 @@ export default function TransactionsPage() {
         )}
       </CardContent>
     </Card>
+  );
+}
+
+export default function TransactionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-full">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <TransactionsPageContent />
+    </Suspense>
   );
 }
