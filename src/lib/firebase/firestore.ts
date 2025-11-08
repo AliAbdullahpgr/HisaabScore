@@ -1,4 +1,4 @@
-
+ 
 'use server';
 
 import { adminDb } from './admin';
@@ -20,7 +20,7 @@ export async function createOrUpdateUserProfile(
 ): Promise<void> {
   const userRef = adminDb.collection('users').doc(userId);
   const now = new Date();
-  
+
   // Use set with merge to avoid reading the document first
   // This is much faster as it only does a single write operation
   // createdAt won't be overwritten if it already exists
@@ -39,12 +39,55 @@ export async function createOrUpdateUserProfile(
  */
 export async function getUserProfile(userId: string): Promise<any | null> {
   const userDoc = await adminDb.collection('users').doc(userId).get();
-  
+
   if (!userDoc.exists) {
     return null;
   }
-  
+
   return { id: userDoc.id, ...userDoc.data() };
+}
+
+/**
+ * Reset all user data (transactions, documents, credit reports)
+ * Keeps the user profile but deletes all associated data
+ */
+export async function resetUserData(userId: string): Promise<void> {
+  const batch = adminDb.batch();
+
+  // Delete all transactions
+  const transactionsSnapshot = await adminDb
+    .collection('users')
+    .doc(userId)
+    .collection('transactions')
+    .get();
+
+  transactionsSnapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  // Delete all documents
+  const documentsSnapshot = await adminDb
+    .collection('users')
+    .doc(userId)
+    .collection('documents')
+    .get();
+
+  documentsSnapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  // Delete all credit reports
+  const reportsSnapshot = await adminDb
+    .collection('users')
+    .doc(userId)
+    .collection('creditReports')
+    .get();
+
+  reportsSnapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
 }
 
 // ==================== TRANSACTIONS ====================

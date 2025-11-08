@@ -15,6 +15,7 @@ import {
   ArrowRightLeft,
   FileText,
   BarChart2,
+  Settings,
   LogOut,
 } from 'lucide-react';
 import Logo from './logo';
@@ -27,6 +28,7 @@ const navItems = [
   { href: '/transactions', icon: ArrowRightLeft, label: 'Transactions' },
   { href: '/documents', icon: FileText, label: 'Documents' },
   { href: '/reports', icon: BarChart2, label: 'Reports' },
+  { href: '/settings', icon: Settings, label: 'Settings' },
 ];
 
 export function AppSidebar() {
