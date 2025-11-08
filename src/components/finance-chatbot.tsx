@@ -1,17 +1,27 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { MessageCircle, X, Send, Loader2, Minimize2, Sparkles, TrendingUp, DollarSign, PiggyBank, RotateCcw } from 'lucide-react';
-import { chatWithFinanceAdvisor } from '@/ai/flows/finance-chat';
-import { Transaction } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Bot,
+  X,
+  Send,
+  Loader2,
+  Minimize2,
+  TrendingUp,
+  DollarSign,
+  PiggyBank,
+  RotateCcw,
+} from "lucide-react";
+import { chatWithFinanceAdvisor } from "@/ai/flows/finance-chat";
+import { Transaction } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface Message {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
 }
@@ -21,8 +31,16 @@ interface FinanceChatbotProps {
 }
 
 const SUGGESTED_PROMPTS = [
-  { icon: TrendingUp, text: "Analyze my spending patterns", color: "text-blue-600" },
-  { icon: DollarSign, text: "What's my total income?", color: "text-green-600" },
+  {
+    icon: TrendingUp,
+    text: "Analyze my spending patterns",
+    color: "text-blue-600",
+  },
+  {
+    icon: DollarSign,
+    text: "What's my total income?",
+    color: "text-green-600",
+  },
   { icon: PiggyBank, text: "Give me saving tips", color: "text-purple-600" },
 ];
 
@@ -31,12 +49,13 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      role: 'assistant',
-      content: "Hi there! 👋 I'm your AI finance advisor. I've analyzed your transaction history and I'm here to help you make smarter financial decisions. What would you like to know?",
+      role: "assistant",
+      content:
+        "Hi there! 👋 I'm your AI finance advisor. I've analyzed your transaction history and I'm here to help you make smarter financial decisions. What would you like to know?",
       timestamp: new Date(),
     },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -51,9 +70,9 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
     const textToSend = messageText || input.trim();
     if (!textToSend || isLoading) return;
 
-    setInput('');
+    setInput("");
     const userMessage: Message = {
-      role: 'user',
+      role: "user",
       content: textToSend,
       timestamp: new Date(),
     };
@@ -69,15 +88,18 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
           amount: t.amount,
           type: t.type,
           category: t.category,
-          status: t.status || 'cleared',
+          status: t.status || "cleared",
         })),
-        conversationHistory: messages.map(m => ({ role: m.role, content: m.content })),
+        conversationHistory: messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+        })),
       });
 
       setMessages((prev) => [
         ...prev,
         {
-          role: 'assistant',
+          role: "assistant",
           content: result.response,
           timestamp: new Date(),
         },
@@ -86,8 +108,9 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
       setMessages((prev) => [
         ...prev,
         {
-          role: 'assistant',
-          content: "I apologize, but I encountered an error processing your request. Please try again.",
+          role: "assistant",
+          content:
+            "I apologize, but I encountered an error processing your request. Please try again.",
           timestamp: new Date(),
         },
       ]);
@@ -97,7 +120,7 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -106,8 +129,9 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
   const handleReset = () => {
     setMessages([
       {
-        role: 'assistant',
-        content: "Hi there! 👋 I'm your AI finance advisor. I've analyzed your transaction history and I'm here to help you make smarter financial decisions. What would you like to know?",
+        role: "assistant",
+        content:
+          "Hi there! 👋 I'm your AI finance advisor. I've analyzed your transaction history and I'm here to help you make smarter financial decisions. What would you like to know?",
         timestamp: new Date(),
       },
     ]);
@@ -118,10 +142,10 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsOpen(true)}
-          className="h-16 w-16 rounded-full shadow-2xl hover:scale-110 transition-transform"
+          className="h-16 w-16 rounded-full shadow-2xl hover:scale-110 transition-transform [&_svg]:size-10"
           size="icon"
         >
-          <MessageCircle className="h-7 w-7" />
+          <Bot className="!h-8 !w-8" />
         </Button>
       </div>
     );
@@ -135,7 +159,7 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
           className="h-14 px-6 rounded-full shadow-2xl hover:scale-105 transition-transform"
           variant="default"
         >
-          <Sparkles className="h-5 w-5 mr-2" />
+          <Bot className="h-5 w-5 mr-2" />
           <span className="font-semibold">Finance Advisor</span>
           {transactions.length > 0 && (
             <Badge variant="secondary" className="ml-2">
@@ -155,7 +179,7 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary/10 to-primary/5 shrink-0">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center">
-            <Sparkles className="h-5 w-5 text-primary-foreground" />
+            <Bot className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
             <h3 className="font-semibold text-base">Finance Advisor</h3>
@@ -192,54 +216,73 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/20" ref={scrollRef}>
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/20"
+        ref={scrollRef}
+      >
         {messages.map((message, index) => (
           <div
             key={index}
             className={cn(
-              'flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300',
-              message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
+              "flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300",
+              message.role === "user" ? "flex-row-reverse" : "flex-row"
             )}
           >
-            {message.role === 'assistant' && (
+            {message.role === "assistant" && (
               <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shrink-0">
-                <Sparkles className="h-4 w-4 text-primary-foreground" />
+                <Bot className="h-4 w-4 text-primary-foreground" />
               </div>
             )}
             <div
               className={cn(
-                'rounded-2xl px-4 py-3 max-w-[85%] shadow-sm',
-                message.role === 'user'
-                  ? 'bg-primary text-primary-foreground rounded-tr-sm'
-                  : 'bg-background border rounded-tl-sm'
+                "rounded-2xl px-4 py-3 max-w-[85%] shadow-sm",
+                message.role === "user"
+                  ? "bg-primary text-primary-foreground rounded-tr-sm"
+                  : "bg-background border rounded-tl-sm"
               )}
             >
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-              <p className={cn(
-                "text-xs mt-1.5 opacity-60",
-                message.role === 'user' ? 'text-right' : 'text-left'
-              )}>
-                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                {message.content}
+              </p>
+              <p
+                className={cn(
+                  "text-xs mt-1.5 opacity-60",
+                  message.role === "user" ? "text-right" : "text-left"
+                )}
+              >
+                {message.timestamp.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </p>
             </div>
-            {message.role === 'user' && (
+            {message.role === "user" && (
               <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
                 <span className="text-sm font-semibold">You</span>
               </div>
             )}
           </div>
         ))}
-        
+
         {isLoading && (
           <div className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center shrink-0">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
+              <Bot className="h-4 w-4 text-primary-foreground" />
             </div>
             <div className="bg-background border rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
               <div className="flex gap-1.5">
-                <div className="h-2 w-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="h-2 w-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="h-2 w-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div
+                  className="h-2 w-2 rounded-full bg-primary/60 animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                />
+                <div
+                  className="h-2 w-2 rounded-full bg-primary/60 animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <div
+                  className="h-2 w-2 rounded-full bg-primary/60 animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                />
               </div>
             </div>
           </div>
@@ -248,7 +291,9 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
         {/* Suggested Prompts */}
         {showSuggestions && (
           <div className="space-y-2 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <p className="text-xs text-muted-foreground text-center font-medium">Suggested questions:</p>
+            <p className="text-xs text-muted-foreground text-center font-medium">
+              Suggested questions:
+            </p>
             <div className="grid gap-2">
               {SUGGESTED_PROMPTS.map((prompt, index) => (
                 <button
@@ -256,8 +301,12 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
                   onClick={() => handleSend(prompt.text)}
                   className="flex items-center gap-2 p-3 rounded-lg border bg-background hover:bg-muted/50 transition-colors text-left group"
                 >
-                  <prompt.icon className={cn("h-4 w-4 shrink-0", prompt.color)} />
-                  <span className="text-sm group-hover:text-primary transition-colors">{prompt.text}</span>
+                  <prompt.icon
+                    className={cn("h-4 w-4 shrink-0", prompt.color)}
+                  />
+                  <span className="text-sm group-hover:text-primary transition-colors">
+                    {prompt.text}
+                  </span>
                 </button>
               ))}
             </div>
@@ -291,9 +340,7 @@ export function FinanceChatbot({ transactions }: FinanceChatbotProps) {
           <p className="text-xs text-muted-foreground">
             {transactions.length} transactions • AI-powered
           </p>
-          <p className="text-xs text-muted-foreground">
-            Press Enter to send
-          </p>
+          <p className="text-xs text-muted-foreground">Press Enter to send</p>
         </div>
       </div>
     </Card>

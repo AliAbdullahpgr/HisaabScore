@@ -18,14 +18,122 @@ import {
   Twitter,
   Linkedin,
   Instagram,
+  Bot,
+  X,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useState, useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
 
 export default function LandingPage() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessage, setChatMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [chatMessages, setChatMessages] = useState<
+    Array<{ role: "user" | "bot"; content: string }>
+  >([
+    {
+      role: "bot",
+      content:
+        "Hi! 👋 I'm here to help you learn about HisaabScore. Ask me anything!",
+    },
+  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages, isTyping]);
+
+  const suggestedQuestions = [
+    { icon: "💳", text: "How does HisaabScore work?" },
+    { icon: "📊", text: "What documents can I upload?" },
+    { icon: "🔒", text: "Is my data secure?" },
+    { icon: "💰", text: "How much does it cost?" },
+  ];
+
+  const getBotResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+
+    if (
+      lowerMessage.includes("how") &&
+      (lowerMessage.includes("work") || lowerMessage.includes("does"))
+    ) {
+      return "HisaabScore builds your credit score from everyday transactions! 📱 Simply upload receipts, bills, and mobile money statements. Our AI analyzes them to create a comprehensive credit score that you can share with lenders. It's designed specifically for people in the informal economy who don't have traditional credit history.";
+    } else if (
+      lowerMessage.includes("document") ||
+      lowerMessage.includes("upload")
+    ) {
+      return "You can upload various documents! 📄 We accept receipts, utility bills, mobile money statements, rent payments, and more. Just snap a photo with your phone or upload PDFs. Our OCR technology automatically extracts transaction data. The more documents you upload, the more accurate your credit score becomes!";
+    } else if (
+      lowerMessage.includes("secure") ||
+      lowerMessage.includes("safe") ||
+      lowerMessage.includes("privacy")
+    ) {
+      return "Your security is our top priority! 🔒 We use bank-level encryption to protect your data. All documents are stored securely, and you control who sees your information. We never share your data without your explicit permission. You can also set password protection on shared reports.";
+    } else if (
+      lowerMessage.includes("cost") ||
+      lowerMessage.includes("price") ||
+      lowerMessage.includes("free")
+    ) {
+      return "Getting started is completely FREE! 🎉 You can create an account, upload documents, and get your credit score at no cost. We believe everyone deserves access to financial services. Premium features for advanced analytics are available, but the core service is always free.";
+    } else if (
+      lowerMessage.includes("credit score") ||
+      lowerMessage.includes("score")
+    ) {
+      return "Your credit score is calculated using AI! 🤖 We analyze income consistency, expense management, bill payment history, and financial growth. Unlike traditional scores, we understand irregular income patterns common in the informal economy. Scores range from 300-850, and you'll get personalized tips to improve yours!";
+    } else if (
+      lowerMessage.includes("start") ||
+      lowerMessage.includes("sign up") ||
+      lowerMessage.includes("begin")
+    ) {
+      return "Getting started is easy! ✨ Click the 'Get Started' button above to create your free account. It takes just 5 minutes. After signing up, you can immediately start uploading documents. You'll see your credit score as soon as we've analyzed your first few transactions!";
+    } else if (
+      lowerMessage.includes("help") ||
+      lowerMessage.includes("support")
+    ) {
+      return "I'm here to help! 💬 You can ask me about how HisaabScore works, what documents to upload, pricing, security, or anything else. If you need human support, our team is available 24/7 at support@hisaabscore.com or through the contact form in the footer.";
+    } else if (
+      lowerMessage.includes("financial passport") ||
+      (lowerMessage.includes("what is") &&
+        (lowerMessage.includes("financial passport") ||
+          lowerMessage.includes("passport") ||
+          lowerMessage.includes("hisaabscore")))
+    ) {
+      return "A Financial Passport is your digital credit identity! 🎫 HisaabScore creates this by analyzing your everyday transactions - receipts, bills, and mobile money. It proves your financial reliability to lenders, even without traditional bank history. Think of it as your ticket to loans, credit, and better financial opportunities!";
+    } else if (
+      lowerMessage.includes("informal economy") ||
+      lowerMessage.includes("informal sector")
+    ) {
+      return "The informal economy includes workers and businesses that aren't formally registered or regulated - like street vendors, freelancers, home-based businesses, and gig workers. 🏪 These people often struggle to access traditional banking and credit because they don't have formal employment records. That's exactly who HisaabScore is designed to help!";
+    } else {
+      return "That's a great question! 🌟 HisaabScore helps people in the informal economy build credit from everyday transactions. You can upload receipts and bills to create a credit score that lenders actually recognize. Want to know more about our features, pricing, or how to get started?";
+    }
+  };
+
+  const handleSendMessage = (messageText?: string) => {
+    const textToSend = messageText || chatMessage.trim();
+    if (!textToSend) return;
+
+    setChatMessages((prev) => [...prev, { role: "user", content: textToSend }]);
+    setChatMessage("");
+    setIsTyping(true);
+
+    // Simulate typing delay
+    setTimeout(() => {
+      const response = getBotResponse(textToSend);
+      setChatMessages((prev) => [...prev, { role: "bot", content: response }]);
+      setIsTyping(false);
+    }, 800);
+  };
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -696,6 +804,157 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Chatbot Widget */}
+      {!isChatOpen ? (
+        <div className="fixed bottom-6 right-6 z-50">
+          <Button
+            onClick={() => setIsChatOpen(true)}
+            size="lg"
+            className="h-16 w-16 rounded-full shadow-2xl hover:scale-110 transition-transform [&_svg]:size-10"
+          >
+            <Bot className="!h-8 !w-8" />
+          </Button>
+        </div>
+      ) : (
+        <Card className="fixed bottom-6 right-6 w-[400px] h-[600px] shadow-2xl z-50 flex flex-col border-0 overflow-hidden rounded-3xl">
+          {/* Chat Header */}
+          <div className="flex items-center justify-between p-5 bg-primary text-primary-foreground rounded-t-3xl">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-primary-foreground flex items-center justify-center">
+                <Bot className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold">HisaabScore Assistant</h3>
+                <p className="text-xs opacity-90">Always here to help</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 hover:bg-primary-foreground/20 text-primary-foreground rounded-full [&_svg]:size-4"
+              onClick={() => setIsChatOpen(false)}
+            >
+              <X className="!h-4 !w-4" />
+            </Button>
+          </div>
+
+          {/* Chat Messages */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-background">
+            {chatMessages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300 ${
+                  msg.role === "user" ? "flex-row-reverse" : "flex-row"
+                }`}
+              >
+                {msg.role === "bot" && (
+                  <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                    <Bot className="h-4 w-4 text-primary-foreground" />
+                  </div>
+                )}
+                <div
+                  className={`rounded-3xl px-4 py-3 max-w-[75%] shadow-sm ${
+                    msg.role === "user"
+                      ? "bg-primary text-primary-foreground rounded-tr-md"
+                      : "bg-muted rounded-tl-md"
+                  }`}
+                >
+                  <p className="text-sm leading-relaxed">{msg.content}</p>
+                </div>
+                {msg.role === "user" && (
+                  <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                    <span className="text-xs font-semibold text-primary-foreground">
+                      You
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex gap-3 animate-in fade-in">
+                <div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center shrink-0">
+                  <Bot className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <div className="rounded-3xl rounded-tl-md px-4 py-3 bg-muted">
+                  <div className="flex gap-1.5">
+                    <div
+                      className="h-2 w-2 rounded-full bg-primary/60 animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    />
+                    <div
+                      className="h-2 w-2 rounded-full bg-primary/60 animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    />
+                    <div
+                      className="h-2 w-2 rounded-full bg-primary/60 animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Suggested Questions */}
+            {chatMessages.length === 1 && !isTyping && (
+              <div className="space-y-3 pt-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <p className="text-xs text-muted-foreground text-center font-medium">
+                  Quick questions:
+                </p>
+                <div className="grid gap-2">
+                  {suggestedQuestions.map((question, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSendMessage(question.text)}
+                      className="flex items-center gap-2 p-2.5 rounded-xl bg-muted hover:bg-primary/10 hover:border-primary border border-transparent transition-all text-left group"
+                    >
+                      <span className="text-base">{question.icon}</span>
+                      <span className="text-xs group-hover:text-primary transition-colors">
+                        {question.text}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Scroll anchor */}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Chat Input */}
+          <div className="p-5 border-t bg-background rounded-b-3xl">
+            <div className="flex items-center gap-2">
+              <Input
+                value={chatMessage}
+                onChange={(e) => setChatMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Ask me anything..."
+                className="flex-1 h-11 rounded-full px-4 bg-muted border-0 text-sm"
+                disabled={isTyping}
+              />
+              <Button
+                onClick={() => handleSendMessage()}
+                size="icon"
+                disabled={!chatMessage.trim() || isTyping}
+                className="h-11 w-11 rounded-full [&_svg]:size-4"
+              >
+                <Send className="!h-4 !w-4" />
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Press Enter to send
+            </p>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
