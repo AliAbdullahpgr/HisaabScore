@@ -37,6 +37,12 @@ const nextConfig: NextConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
       };
+
+      // Fix for Genkit Google AI plugin
+      config.externals = config.externals || [];
+      config.externals.push({
+        "@genkit-ai/google-genai": "commonjs @genkit-ai/google-genai",
+      });
     }
     return config;
   },

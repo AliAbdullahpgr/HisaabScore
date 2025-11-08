@@ -21,6 +21,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/logo";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function LandingPage() {
   return (
@@ -50,6 +51,7 @@ export default function LandingPage() {
           </Link>
         </nav>
         <div className="ml-auto lg:ml-6 flex items-center gap-3">
+          <ThemeToggle />
           <Button
             className="hover:bg-primary/10 hover:text-primary hidden sm:flex transition-all duration-200"
             variant="ghost"
