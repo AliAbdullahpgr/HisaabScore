@@ -5,20 +5,22 @@ import Image from "next/image";
 import {
   ArrowRight,
   UploadCloud,
-  BarChart,
+  BarChart3,
   FileText,
-  Star,
   Shield,
   Zap,
+  TrendingUp,
+  CheckCircle2,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Instagram,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Logo from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -26,48 +28,45 @@ import { ThemeToggle } from "@/components/theme-toggle";
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="px-4 lg:px-6 h-16 flex items-center bg-background/95 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
-        <Link href="#" className="flex items-center justify-center">
+      {/* Header */}
+      <header className="px-4 lg:px-6 h-20 flex items-center bg-background/80 backdrop-blur-lg sticky top-0 z-50 border-b">
+        <Link href="/" className="flex items-center justify-center">
           <Logo />
         </Link>
-        <nav className="ml-auto hidden lg:flex gap-6">
+        <nav className="ml-auto hidden lg:flex gap-8 mr-8">
           <Link
             href="#features"
-            className="text-sm font-medium hover:text-primary transition-colors duration-200"
+            className="text-sm font-medium hover:text-primary transition-colors"
           >
             Features
           </Link>
           <Link
             href="#how-it-works"
-            className="text-sm font-medium hover:text-primary transition-colors duration-200"
+            className="text-sm font-medium hover:text-primary transition-colors"
           >
             How It Works
           </Link>
           <Link
             href="#testimonials"
-            className="text-sm font-medium hover:text-primary transition-colors duration-200"
+            className="text-sm font-medium hover:text-primary transition-colors"
           >
             Testimonials
           </Link>
-        </nav>
-        <div className="ml-auto lg:ml-6 flex items-center gap-3">
-          <Button
-            className="hover:bg-primary/10 hover:text-primary hidden sm:flex transition-all duration-200"
-            variant="ghost"
-            size="sm"
-            asChild
+          <Link
+            href="#pricing"
+            className="text-sm font-medium hover:text-primary transition-colors"
           >
+            Pricing
+          </Link>
+        </nav>
+        <div className="ml-auto lg:ml-0 flex items-center gap-3">
+          <Button variant="ghost" size="sm" asChild>
             <Link href="/login">Log In</Link>
           </Button>
-          <Button
-            size="sm"
-            className="shadow-lg hover:shadow-xl transition-all duration-200"
-            asChild
-          >
+          <Button size="sm" className="shadow-lg" asChild>
             <Link href="/signup">
-              <span className="hidden sm:inline">Get Started</span>
-              <span className="sm:hidden">Join</span>
-              <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <ThemeToggle />
@@ -75,34 +74,70 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full py-8 md:py-16 lg:py-24 xl:py-16">
+        {/* Hero Section */}
+        <section className="w-full py-16 md:py-24 lg:py-32 bg-gradient-to-b from-background to-muted/20">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
-              <div className="flex flex-col justify-center space-y-6 order-2 lg:order-1">
-                <div className="space-y-4">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl font-headline">
-                    Your Financial Passport for the Informal Economy
+            <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+              <div className="flex flex-col justify-center space-y-8">
+                <div className="space-y-6">
+                  <Badge className="w-fit bg-primary/10 text-primary hover:bg-primary/20">
+                    <Zap className="h-3 w-3 mr-1" />
+                    AI-Powered Credit Scoring
+                  </Badge>
+                  <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+                    Your Financial Passport for the{" "}
+                    <span className="text-primary">Informal Economy</span>
                   </h1>
-                  <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-[600px]">
+                  <p className="text-lg md:text-xl text-muted-foreground max-w-[600px]">
                     HisaabScore builds your credit score from your everyday
                     financial life. Turn your receipts and mobile money
                     statements into opportunities.
                   </p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button size="lg" className="w-full sm:w-auto" asChild>
-                    <Link href="/signup">Get Your Free Score</Link>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button size="lg" className="text-base shadow-xl" asChild>
+                    <Link href="/signup">
+                      Get Your Free Score
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="text-base"
+                    asChild
+                  >
+                    <Link href="#how-it-works">Learn More</Link>
                   </Button>
                 </div>
+                <div className="flex items-center gap-8 pt-4">
+                  <div className="flex flex-col">
+                    <div className="text-3xl font-bold text-primary">10K+</div>
+                    <div className="text-sm text-muted-foreground">
+                      Active Users
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-3xl font-bold text-primary">95%</div>
+                    <div className="text-sm text-muted-foreground">
+                      Satisfaction
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <div className="text-3xl font-bold text-primary">24/7</div>
+                    <div className="text-sm text-muted-foreground">Support</div>
+                  </div>
+                </div>
               </div>
-              <div className="order-1 lg:order-2 flex justify-center">
-                <div className="w-64 sm:w-80 md:w-96 lg:w-full max-w-xl">
+              <div className="flex justify-center lg:justify-end">
+                <div className="relative w-full max-w-2xl">
+                  <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full"></div>
                   <Image
                     src="/heroImage.svg"
-                    alt="HisaabScore Hero Illustration"
-                    width={600}
-                    height={400}
-                    className="w-full h-auto rounded-xl"
+                    alt="HisaabScore Dashboard"
+                    width={700}
+                    height={500}
+                    className="relative w-full h-auto rounded-2xl"
                     priority
                   />
                 </div>
@@ -111,321 +146,555 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section
-          id="how-it-works"
-          className="w-full py-12 md:py-24 lg:py-32 bg-secondary"
-        >
+        {/* How It Works */}
+        <section id="how-it-works" className="w-full py-16 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <Badge
-                  variant="default"
-                  className="bg-[#1055CB] text-primary-foreground hover:bg-primary/30"
-                >
-                  How It Works
-                </Badge>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                  Get Your Score in 3 Simple Steps
-                </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our secure platform makes it easy to build your financial
-                  identity from the documents you already have.
-                </p>
-              </div>
+            <div className="flex flex-col items-center text-center space-y-4 mb-16">
+              <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
+                How It Works
+              </Badge>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                Get Your Score in{" "}
+                <span className="text-primary">3 Simple Steps</span>
+              </h2>
+              <p className="max-w-[800px] text-lg text-muted-foreground">
+                Our secure platform makes it easy to build your financial
+                identity from the documents you already have.
+              </p>
             </div>
-            <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-3 mt-12">
-              <div className="flex flex-col items-center text-center space-y-4 p-6">
-                <div className="p-4 bg-primary rounded-full">
-                  <UploadCloud className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+            <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+              <Card className="relative overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">1</span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold font-headline">
-                  1. Upload Documents
-                </h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  Snap photos of receipts, or upload utility bills and mobile
-                  money statements from your phone.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center space-y-4 p-6">
-                <div className="p-4 bg-primary rounded-full">
-                  <BarChart className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+                <CardContent className="pt-8 pb-8 space-y-4">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <UploadCloud className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Upload Documents</h3>
+                  <p className="text-muted-foreground">
+                    Snap photos of receipts, or upload utility bills and mobile
+                    money statements from your phone.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="relative overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">2</span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold font-headline">
-                  2. AI-Powered Analysis
-                </h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  Our smart OCR and AI categorize your transactions, identifying
-                  income, expenses, and bill payments.
-                </p>
-              </div>
-              <div className="flex flex-col items-center text-center space-y-4 p-6 sm:col-span-2 lg:col-span-1">
-                <div className="p-4 bg-primary rounded-full">
-                  <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-primary-foreground" />
+                <CardContent className="pt-8 pb-8 space-y-4">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <BarChart3 className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">AI-Powered Analysis</h3>
+                  <p className="text-muted-foreground">
+                    Our smart OCR and AI categorize your transactions,
+                    identifying income, expenses, and bill payments.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="relative overflow-hidden border-2 hover:border-primary transition-all hover:shadow-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">3</span>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold font-headline">
-                  3. Receive Your Score
-                </h3>
-                <p className="text-sm sm:text-base text-muted-foreground">
-                  Get a comprehensive credit score and a detailed report you can
-                  share with lenders.
-                </p>
-              </div>
+                <CardContent className="pt-8 pb-8 space-y-4">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <FileText className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-bold">Receive Your Score</h3>
+                  <p className="text-muted-foreground">
+                    Get a comprehensive credit score and a detailed report you
+                    can share with lenders.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
+        {/* Features Section */}
+        <section
+          id="features"
+          className="w-full py-16 md:py-24 lg:py-32 bg-muted/30"
+        >
           <div className="container px-4 md:px-6">
-            <div className="space-y-2 text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                Unlock Your Financial Future
+            <div className="flex flex-col items-center text-center space-y-4 mb-16">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                Unlock Your{" "}
+                <span className="text-primary">Financial Future</span>
               </h2>
-              <p className="max-w-[900px] mx-auto text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <p className="max-w-[800px] text-lg text-muted-foreground">
                 Everything you need to build credit and access fair financial
                 services.
               </p>
             </div>
-            <div className="mx-auto grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
-              <div className="flex flex-col justify-center space-y-6 order-1 lg:order-2">
-                <ul className="grid gap-6">
-                  <li>
-                    <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold font-headline">
-                        Seamless Document Upload
-                      </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        Use your phone's camera or file picker. Our app works
-                        online and offline, queuing uploads for when you have a
-                        connection.
-                      </p>
-                    </div>
+
+            {/* Feature 1 */}
+            <div className="grid gap-12 lg:grid-cols-2 items-center mb-24 max-w-6xl mx-auto">
+              <div className="space-y-6">
+                <div className="inline-block p-3 bg-primary/10 rounded-2xl">
+                  <UploadCloud className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold">Seamless Document Upload</h3>
+                <p className="text-lg text-muted-foreground">
+                  Use your phone's camera or file picker. Our app works online
+                  and offline, queuing uploads for when you have a connection.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Camera integration for instant receipt capture
+                    </span>
                   </li>
-                  <li>
-                    <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold font-headline">
-                        Intelligent Transaction Categorization
-                      </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        AI automatically sorts your income and expenses. Easily
-                        correct categories to teach the system.
-                      </p>
-                    </div>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Offline mode with automatic sync
+                    </span>
                   </li>
-                  <li>
-                    <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold font-headline">
-                        Actionable Insights
-                      </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        Our dashboard gives you a clear overview of your
-                        financial health and personalized tips to improve your
-                        score.
-                      </p>
-                    </div>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Support for multiple file formats
+                    </span>
                   </li>
                 </ul>
               </div>
-              <div className="order-2 lg:order-1 flex justify-center">
-                <div className="w-56 sm:w-72 md:w-80 lg:w-96 xl:w-full max-w-lg">
-                  <Image
-                    src="/heroImage2.svg"
-                    width={550}
-                    height={550}
-                    alt="Document Upload Feature"
-                    className="w-full h-auto rounded-xl"
-                  />
-                </div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
+                <Image
+                  src="/heroImage2.svg"
+                  width={600}
+                  height={500}
+                  alt="Document Upload"
+                  className="relative w-full h-auto rounded-2xl"
+                />
               </div>
             </div>
 
-            <div className="mx-auto grid items-center gap-8 lg:grid-cols-2 lg:gap-12 mt-16 lg:mt-24">
-              <div className="flex flex-col justify-center space-y-6 order-1 lg:order-1">
-                <ul className="grid gap-6">
-                  <li>
-                    <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold font-headline">
-                        Bank-Ready PDF Reports
-                      </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        Generate professional, detailed credit reports to share
-                        with lenders and financial institutions.
-                      </p>
-                    </div>
+            {/* Feature 2 */}
+            <div className="grid gap-12 lg:grid-cols-2 items-center mb-24 max-w-6xl mx-auto">
+              <div className="order-2 lg:order-1 relative">
+                <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
+                <Image
+                  src="/heroImage3.svg"
+                  width={600}
+                  height={500}
+                  alt="Credit Reports"
+                  className="relative w-full h-auto rounded-2xl"
+                />
+              </div>
+              <div className="order-1 lg:order-2 space-y-6">
+                <div className="inline-block p-3 bg-primary/10 rounded-2xl">
+                  <Shield className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold">Bank-Ready PDF Reports</h3>
+                <p className="text-lg text-muted-foreground">
+                  Generate professional, detailed credit reports to share with
+                  lenders and financial institutions.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Professional PDF format accepted by banks
+                    </span>
                   </li>
-                  <li>
-                    <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold font-headline">
-                        Secure Sharing
-                      </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        Share your report via a unique, time-limited link with
-                        optional password protection. You control who sees your
-                        data.
-                      </p>
-                    </div>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Secure sharing with time-limited links
+                    </span>
                   </li>
-                  <li>
-                    <div className="space-y-2">
-                      <h3 className="text-lg sm:text-xl font-bold font-headline">
-                        Holistic Credit Scoring
-                      </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground">
-                        Our algorithm looks beyond traditional metrics,
-                        considering income consistency, expense management, and
-                        financial discipline.
-                      </p>
-                    </div>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Optional password protection
+                    </span>
                   </li>
                 </ul>
               </div>
-              <div className="order-2 lg:order-2 flex justify-center">
-                <div className="w-56 sm:w-72 md:w-80 lg:w-96 xl:w-full max-w-lg">
-                  <Image
-                    src="/heroImage3.svg"
-                    width={450}
-                    height={450}
-                    alt="Credit Report Feature"
-                    className="w-full h-auto rounded-xl"
-                  />
+            </div>
+
+            {/* Feature 3 */}
+            <div className="grid gap-12 lg:grid-cols-2 items-center max-w-6xl mx-auto">
+              <div className="space-y-6">
+                <div className="inline-block p-3 bg-primary/10 rounded-2xl">
+                  <TrendingUp className="h-8 w-8 text-primary" />
                 </div>
+                <h3 className="text-2xl font-bold">Holistic Credit Scoring</h3>
+                <p className="text-lg text-muted-foreground">
+                  Our algorithm looks beyond traditional metrics, considering
+                  income consistency, expense management, and financial
+                  discipline.
+                </p>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      AI-powered transaction categorization
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Real-time score updates
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-muted-foreground">
+                      Personalized improvement tips
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
+                <Image
+                  src="/heroImage.svg"
+                  width={600}
+                  height={500}
+                  alt="Credit Scoring"
+                  className="relative w-full h-auto rounded-2xl"
+                />
               </div>
             </div>
           </div>
         </section>
 
-        <section
-          id="testimonials"
-          className="w-full py-12 md:py-24 lg:py-32 bg-secondary"
-        >
-          <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
-            <div className="space-y-3">
-              <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight font-headline">
-                Trusted by Entrepreneurs and Freelancers
+        {/* Testimonials */}
+        <section id="testimonials" className="w-full py-16 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center text-center space-y-4 mb-16">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                Trusted by <span className="text-primary">Entrepreneurs</span>{" "}
+                and Freelancers
               </h2>
-              <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              <p className="max-w-[800px] text-lg text-muted-foreground">
                 See how HisaabScore is helping people in the informal sector
                 unlock financial opportunities.
               </p>
             </div>
-            <div className="mx-auto w-full max-w-6xl grid gap-6 sm:grid-cols-2 lg:grid-cols-3 pt-12">
-              <Card className="h-full">
-                <CardHeader className="items-center pb-4">
-                  <Avatar className="w-12 h-12 sm:w-16 sm:h-16">
-                    <AvatarFallback className="text-lg font-semibold">
-                      FS
-                    </AvatarFallback>
-                  </Avatar>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-sm sm:text-base text-center">
+            <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+              <Card className="border-2 hover:border-primary transition-all">
+                <CardContent className="pt-8 pb-8 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-xl font-bold text-primary">FS</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">Fatima S.</div>
+                      <div className="text-sm text-muted-foreground">
+                        Small Shop Owner
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground">
                     "For the first time, I could show a bank my real income.
                     HisaabScore helped me get a loan to expand my shop."
                   </p>
                 </CardContent>
-                <CardFooter className="flex-col items-center space-y-1">
-                  <p className="font-semibold text-sm sm:text-base">
-                    Fatima S.
-                  </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Small Shop Owner
-                  </p>
-                </CardFooter>
               </Card>
-              <Card className="h-full">
-                <CardHeader className="items-center pb-4">
-                  <Avatar className="w-12 h-12 sm:w-16 sm:h-16">
-                    <AvatarFallback className="text-lg font-semibold">
-                      AK
-                    </AvatarFallback>
-                  </Avatar>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-sm sm:text-base text-center">
+
+              <Card className="border-2 hover:border-primary transition-all">
+                <CardContent className="pt-8 pb-8 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-xl font-bold text-primary">AK</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">Ahmed K.</div>
+                      <div className="text-sm text-muted-foreground">
+                        Delivery Rider & Freelancer
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground">
                     "As a freelancer, my income is irregular. HisaabScore
                     understood this and gave me a fair score that I used to get
                     a new motorcycle."
                   </p>
                 </CardContent>
-                <CardFooter className="flex-col items-center space-y-1">
-                  <p className="font-semibold text-sm sm:text-base">Ahmed K.</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Delivery Rider & Freelancer
-                  </p>
-                </CardFooter>
               </Card>
-              <Card className="h-full sm:col-span-2 lg:col-span-1">
-                <CardHeader className="items-center pb-4">
-                  <Avatar className="w-12 h-12 sm:w-16 sm:h-16">
-                    <AvatarFallback className="text-lg font-semibold">
-                      ZH
-                    </AvatarFallback>
-                  </Avatar>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-sm sm:text-base text-center">
+
+              <Card className="border-2 hover:border-primary transition-all">
+                <CardContent className="pt-8 pb-8 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-xl font-bold text-primary">ZH</span>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">Zainab H.</div>
+                      <div className="text-sm text-muted-foreground">
+                        Home-based Caterer
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground">
                     "The dashboard helped me understand where my money was
                     going. I've improved my score by 150 points in just 3
                     months!"
                   </p>
                 </CardContent>
-                <CardFooter className="flex-col items-center space-y-1">
-                  <p className="font-semibold text-sm sm:text-base">
-                    Zainab H.
-                  </p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Home-based caterer
-                  </p>
-                </CardFooter>
               </Card>
             </div>
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 lg:py-32">
+        {/* CTA Section */}
+        <section className="w-full py-16 md:py-24 lg:py-32 bg-gradient-to-br from-primary to-primary/80">
           <div className="container px-4 md:px-6">
-            <div className="bg-primary rounded-lg text-primary-foreground p-6 sm:p-8 md:p-12 text-center">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tighter font-headline">
+            <div className="flex flex-col items-center text-center space-y-8 text-primary-foreground">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl max-w-3xl">
                 Ready to Build Your Credit?
               </h2>
-              <p className="mx-auto max-w-[600px] mt-4 text-sm sm:text-base md:text-lg">
+              <p className="text-lg md:text-xl max-w-2xl opacity-90">
                 Join thousands of others and take the first step towards a
                 better financial future. It's free and takes only 5 minutes.
               </p>
-              <div className="mt-6 sm:mt-8">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="w-full sm:w-auto"
-                  asChild
-                >
-                  <Link href="/signup">
-                    Sign Up for Free <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="text-base shadow-2xl"
+                asChild
+              >
+                <Link href="/signup">
+                  Sign Up for Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="flex flex-col gap-4 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
-        <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-          &copy; 2025 HisaabScore. All rights reserved.
-        </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
-          <Link
-            href="#"
-            className="text-xs sm:text-sm hover:underline underline-offset-4"
-          >
-            Terms of Service
-          </Link>
-          <Link
-            href="#"
-            className="text-xs sm:text-sm hover:underline underline-offset-4"
-          >
-            Privacy
-          </Link>
-        </nav>
+      {/* Footer */}
+      <footer className="w-full border-t bg-muted/30">
+        <div className="container px-4 md:px-6 py-12 md:py-16">
+          <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+            {/* Company Info */}
+            <div className="lg:col-span-2 space-y-4">
+              <Logo />
+              <p className="text-sm text-muted-foreground max-w-sm">
+                Building financial inclusion for the informal economy. Turn your
+                everyday transactions into credit opportunities.
+              </p>
+              <div className="flex gap-4">
+                <Link
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+                >
+                  <Facebook className="h-5 w-5 text-primary" />
+                </Link>
+                <Link
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+                >
+                  <Twitter className="h-5 w-5 text-primary" />
+                </Link>
+                <Link
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+                >
+                  <Linkedin className="h-5 w-5 text-primary" />
+                </Link>
+                <Link
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 flex items-center justify-center transition-colors"
+                >
+                  <Instagram className="h-5 w-5 text-primary" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Product */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Product</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    href="#features"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#how-it-works"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    How It Works
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#pricing"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    FAQ
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Company</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Press Kit
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div className="space-y-4">
+              <h3 className="font-semibold text-lg">Legal</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Terms of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Cookie Policy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Security
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Contact Info */}
+          <div className="mt-12 pt-8 border-t">
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="flex items-start gap-3">
+                <Mail className="h-5 w-5 text-primary mt-0.5" />
+                <div>
+                  <div className="font-medium text-sm">Email</div>
+                  <a
+                    href="mailto:support@hisaabscore.com"
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    support@hisaabscore.com
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Phone className="h-5 w-5 text-primary mt-0.5" />
+                <div>
+                  <div className="font-medium text-sm">Phone</div>
+                  <a
+                    href="tel:+1234567890"
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    +1 (234) 567-890
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-primary mt-0.5" />
+                <div>
+                  <div className="font-medium text-sm">Address</div>
+                  <p className="text-sm text-muted-foreground">
+                    123 Finance Street, City, Country
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground text-center md:text-left">
+              &copy; 2025 HisaabScore. All rights reserved.
+            </p>
+            <div className="flex gap-6">
+              <Link
+                href="#"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Sitemap
+              </Link>
+              <Link
+                href="#"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Accessibility
+              </Link>
+              <Link
+                href="#"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Status
+              </Link>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
