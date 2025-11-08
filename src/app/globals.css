@@ -139,3 +139,51 @@ h6 {
     @apply bg-background text-foreground;
   }
 }
+
+/* Prevent flash of content before loading screen appears */
+@layer utilities {
+  .page-loading {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .page-loaded {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 300ms ease-in-out;
+  }
+}
+
+/* Fix for white corners on rounded buttons with shadows */
+@layer components {
+  button,
+  .button,
+  a[role="button"] {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Ensure background clips to border radius */
+    background-clip: padding-box;
+    -webkit-background-clip: padding-box;
+    /* Create stacking context to prevent shadow bleed */
+    isolation: isolate;
+  }
+
+  /* Additional fix for buttons with shadows */
+  button[class*="shadow"],
+  .button[class*="shadow"] {
+    overflow: hidden;
+    transition: box-shadow 0.2s ease-in-out;
+  }
+
+  /* Remove shadow on hover to prevent white corners */
+  button[class*="shadow"]:hover,
+  .button[class*="shadow"]:hover {
+    box-shadow: none !important;
+  }
+}
