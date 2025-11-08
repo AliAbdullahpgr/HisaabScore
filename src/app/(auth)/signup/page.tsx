@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
-import { useUser, useAuth } from '@/firebase';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { useUser, useAuth } from "@/firebase";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
-} from 'firebase/auth';
-import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+} from "firebase/auth";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -28,18 +28,24 @@ export default function SignupPage() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     // Only redirect verified users to dashboard
     // Unverified users will be redirected to verify-email by AuthGuard
-    if (!isUserLoading && user && user.emailVerified && !isSigningUp && !isRedirecting) {
-      router.push('/dashboard');
+    if (
+      !isUserLoading &&
+      user &&
+      user.emailVerified &&
+      !isSigningUp &&
+      !isRedirecting
+    ) {
+      router.push("/dashboard");
     }
   }, [user, isUserLoading, isSigningUp, isRedirecting, router]);
 
@@ -61,23 +67,26 @@ export default function SignupPage() {
       // Send email verification with custom settings
       try {
         await sendEmailVerification(user, {
-          url: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/login`,
+          url: `${
+            process.env.NEXT_PUBLIC_APP_URL || window.location.origin
+          }/login`,
           handleCodeInApp: false,
         });
       } catch (emailError: any) {
-        console.error('Email verification error:', emailError);
+        console.error("Email verification error:", emailError);
         toast({
-          variant: 'destructive',
-          title: 'Warning',
-          description: 'Account created but verification email could not be sent. You can try logging in and we will send you a verification email.',
+          variant: "destructive",
+          title: "Warning",
+          description:
+            "Account created but verification email could not be sent. You can try logging in and we will send you a verification email.",
         });
       }
 
       // Create user profile in Firestore
       try {
-        await fetch('/api/create-user-profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        await fetch("/api/create-user-profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: user.uid,
             email: user.email,
@@ -91,30 +100,31 @@ export default function SignupPage() {
 
       // Set redirecting flag to prevent auto-redirect to dashboard
       setIsRedirecting(true);
-      
+
       // DON'T sign out - keep user authenticated so they can check verification status
       // await auth.signOut();
 
       toast({
-        title: 'Account Created! 🎉',
-        description: 'Please check your email to verify your account. We\'ll check your status automatically.',
+        title: "Account Created! 🎉",
+        description:
+          "Please check your email to verify your account. We'll check your status automatically.",
       });
-      
+
       // Redirect to verify-email page (user stays authenticated)
-      router.push('/verify-email');
+      router.push("/verify-email");
     } catch (error: any) {
-      let description = 'An unexpected error occurred. Please try again.';
-      if (error.code === 'auth/email-already-in-use') {
+      let description = "An unexpected error occurred. Please try again.";
+      if (error.code === "auth/email-already-in-use") {
         description =
-          'This email is already in use. Please try logging in instead.';
-      } else if (error.code === 'auth/weak-password') {
-        description = 'Password should be at least 6 characters.';
-      } else if (error.code === 'auth/invalid-email') {
-        description = 'Invalid email address.';
+          "This email is already in use. Please try logging in instead.";
+      } else if (error.code === "auth/weak-password") {
+        description = "Password should be at least 6 characters.";
+      } else if (error.code === "auth/invalid-email") {
+        description = "Invalid email address.";
       }
       toast({
-        variant: 'destructive',
-        title: 'Sign Up Failed',
+        variant: "destructive",
+        title: "Sign Up Failed",
         description,
       });
     } finally {
@@ -171,7 +181,7 @@ export default function SignupPage() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="xyz@example.com"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -195,7 +205,7 @@ export default function SignupPage() {
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link href="/login" className="underline">
             Login
           </Link>
@@ -204,5 +214,3 @@ export default function SignupPage() {
     </Card>
   );
 }
-
-    
