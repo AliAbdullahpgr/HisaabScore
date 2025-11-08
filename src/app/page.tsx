@@ -51,7 +51,6 @@ export default function LandingPage() {
           </Link>
         </nav>
         <div className="ml-auto lg:ml-6 flex items-center gap-3">
-          <ThemeToggle />
           <Button
             className="hover:bg-primary/10 hover:text-primary hidden sm:flex transition-all duration-200"
             variant="ghost"
@@ -71,6 +70,7 @@ export default function LandingPage() {
               <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
             </Link>
           </Button>
+          <ThemeToggle />
         </div>
       </header>
 

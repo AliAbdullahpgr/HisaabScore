@@ -103,15 +103,15 @@ export function UserNav() {
         <DropdownMenuSeparator />
         {mounted && (
           <>
-            <DropdownMenuItem 
+            <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault();
-                setTheme(theme === 'dark' ? 'light' : 'dark');
+                setTheme(theme === "dark" ? "light" : "dark");
               }}
             >
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center">
-                  {theme === 'dark' ? (
+                  {theme === "dark" ? (
                     <Moon className="mr-2 h-4 w-4" />
                   ) : (
                     <Sun className="mr-2 h-4 w-4" />
@@ -120,12 +120,12 @@ export function UserNav() {
                 </div>
                 <div
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                    theme === 'dark' ? 'bg-primary' : 'bg-muted'
+                    theme === "dark" ? "bg-primary" : "bg-muted"
                   }`}
                 >
                   <span
                     className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
-                      theme === 'dark' ? 'translate-x-5' : 'translate-x-1'
+                      theme === "dark" ? "translate-x-5" : "translate-x-1"
                     }`}
                   />
                 </div>
