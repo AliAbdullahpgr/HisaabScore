@@ -1,13 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from "@/firebase/client-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "HisaabScore",
-  description: "Your financial passport for the informal economy.",
-};
 
 export default function RootLayout({
   children,
@@ -17,6 +13,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <title>HisaabScore</title>
+        <meta
+          name="description"
+          content="Your financial passport for the informal economy."
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
