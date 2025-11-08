@@ -19,29 +19,19 @@ export async function createOrUpdateUserProfile(
   }
 ): Promise<void> {
   const userRef = adminDb.collection('users').doc(userId);
-  const userDoc = await userRef.get();
-  
   const now = new Date();
   
-  if (!userDoc.exists) {
-    // Create new user profile
-    await userRef.set({
-      email: userData.email,
-      displayName: userData.displayName || null,
-      photoURL: userData.photoURL || null,
-      createdAt: now,
-      updatedAt: now,
-      lastLoginAt: now,
-    });
-  } else {
-    // Update existing user profile
-    await userRef.update({
-      displayName: userData.displayName || null,
-      photoURL: userData.photoURL || null,
-      updatedAt: now,
-      lastLoginAt: now,
-    });
-  }
+  // Use set with merge to avoid reading the document first
+  // This is much faster as it only does a single write operation
+  // createdAt won't be overwritten if it already exists
+  await userRef.set({
+    email: userData.email,
+    displayName: userData.displayName || null,
+    photoURL: userData.photoURL || null,
+    createdAt: now,
+    updatedAt: now,
+    lastLoginAt: now,
+  }, { merge: true });
 }
 
 /**

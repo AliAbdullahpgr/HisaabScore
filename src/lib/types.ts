@@ -9,7 +9,7 @@ export type Transaction = {
 };
 
 export type Document = {
-  id:string;
+  id: string;
   name: string;
   uploadDate: string;
   type: 'receipt' | 'utility bill' | 'wallet statement';

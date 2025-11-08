@@ -45,20 +45,19 @@ export default function LoginPage() {
   const handlePostLogin = async (
     firebaseUser: import('firebase/auth').User
   ) => {
-    try {
-      await fetch('/api/create-user-profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL,
-        }),
-      });
-    } catch (profileError) {
-      // Don't block login if profile creation fails
-    }
+    // Fire-and-forget profile update - don't wait for it
+    fetch('/api/create-user-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL,
+      }),
+    }).catch(() => {
+      // Silently fail - profile will be created on next login
+    });
 
     toast({
       title: 'Login Successful',
