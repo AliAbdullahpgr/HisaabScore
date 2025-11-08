@@ -188,7 +188,7 @@ export default function LandingPage() {
             <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
               <div className="flex flex-col justify-center space-y-8">
                 <div className="space-y-6">
-                  <Badge className="w-fit bg-primary/10 text-primary hover:bg-primary/20">
+                  <Badge className="w-fit bg-primary/10 px-4 py-2 text-primary hover:bg-primary/20">
                     <Zap className="h-3 w-3 mr-1" />
                     AI-Powered Credit Scoring
                   </Badge>
@@ -463,7 +463,7 @@ export default function LandingPage() {
               <div className="relative">
                 <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full"></div>
                 <Image
-                  src="/heroImage.svg"
+                  src="/heroImage4.svg"
                   width={600}
                   height={500}
                   alt="Credit Scoring"
