@@ -12,17 +12,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { LogOut, Moon, Sun } from "lucide-react";
 import { useUser, useAuth } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export function UserNav() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     if (!auth) {
@@ -93,6 +101,39 @@ export function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        {mounted && (
+          <>
+            <DropdownMenuItem 
+              onSelect={(e) => {
+                e.preventDefault();
+                setTheme(theme === 'dark' ? 'light' : 'dark');
+              }}
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  {theme === 'dark' ? (
+                    <Moon className="mr-2 h-4 w-4" />
+                  ) : (
+                    <Sun className="mr-2 h-4 w-4" />
+                  )}
+                  <span>Dark Mode</span>
+                </div>
+                <div
+                  className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                    theme === 'dark' ? 'bg-primary' : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                      theme === 'dark' ? 'translate-x-5' : 'translate-x-1'
+                    }`}
+                  />
+                </div>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
