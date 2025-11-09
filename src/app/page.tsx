@@ -1582,9 +1582,10 @@ export default function LandingPage() {
         {/* Chatbot Widget */}
         {!isChatOpen ? (
           <motion.div
-            style={{ borderRadius: "9999px", overflow: "hidden" }}
-            className="fixed bottom-6 right-6 z-50"
-            whileHover={prefersReducedMotion ? {} : { scale: 1.1 }}
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100]"
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
             whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
             transition={getReducedMotionTransition(prefersReducedMotion, {
               duration: 0.2,
@@ -1593,9 +1594,9 @@ export default function LandingPage() {
             <Button
               onClick={() => setIsChatOpen(true)}
               size="lg"
-              className="h-16 w-16 rounded-full shadow-2xl [&_svg]:size-10"
+              className="h-14 w-14 md:h-16 md:w-16 rounded-full shadow-xl [&_svg]:size-10"
             >
-              <Bot className="!h-8 !w-8" />
+              <Bot className="!h-7 !w-7 md:!h-8 md:!w-8" />
             </Button>
           </motion.div>
         ) : (
@@ -1607,9 +1608,9 @@ export default function LandingPage() {
               duration: 0.3,
               ease: "easeOut",
             })}
-            className="fixed bottom-6 right-6 z-50"
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100] w-[calc(100vw-2rem)] sm:w-[400px] max-w-[400px]"
           >
-            <Card className="w-[400px] h-[600px] shadow-2xl flex flex-col border-0 overflow-hidden rounded-3xl">
+            <Card className="w-full h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col border-0 overflow-hidden rounded-3xl">
               {/* Chat Header */}
               <div className="flex items-center justify-between p-5 bg-primary text-primary-foreground rounded-t-3xl">
                 <div className="flex items-center gap-3">
