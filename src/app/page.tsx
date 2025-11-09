@@ -21,6 +21,7 @@ import {
   Bot,
   X,
   Send,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,6 +53,7 @@ export default function LandingPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<
     Array<{ role: "user" | "bot"; content: string }>
   >([
@@ -81,6 +83,18 @@ export default function LandingPage() {
 
     return () => clearTimeout(loadTimer);
   }, []);
+
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isMobileMenuOpen]);
 
   const suggestedQuestions = [
     { icon: "💳", text: "How does HisaabScore work?" },
@@ -167,7 +181,7 @@ export default function LandingPage() {
     <>
       <LoadingScreen isLoading={isLoading} />
       <div
-        className={`flex flex-col min-h-screen ${
+        className={`flex flex-col min-h-screen overflow-x-hidden ${
           isLoading ? "page-loading" : "page-loaded"
         }`}
       >
@@ -185,8 +199,11 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center justify-center">
             <Logo />
           </Link>
+
+          {/* Desktop Navigation */}
           <nav className="ml-auto hidden lg:flex gap-8 mr-8">
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -200,6 +217,7 @@ export default function LandingPage() {
               </Link>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -213,6 +231,7 @@ export default function LandingPage() {
               </Link>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -226,6 +245,7 @@ export default function LandingPage() {
               </Link>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -239,8 +259,11 @@ export default function LandingPage() {
               </Link>
             </motion.div>
           </nav>
-          <div className="ml-auto lg:ml-0 flex items-center gap-3">
+
+          {/* Desktop Actions */}
+          <div className="ml-auto lg:ml-0 hidden lg:flex items-center gap-3">
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
@@ -252,6 +275,7 @@ export default function LandingPage() {
               </Button>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={
                 prefersReducedMotion
                   ? {}
@@ -274,7 +298,129 @@ export default function LandingPage() {
             </motion.div>
             <ThemeToggle />
           </div>
+
+          {/* Mobile Actions */}
+          <div className="ml-auto flex lg:hidden items-center gap-3">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </div>
         </motion.header>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={getReducedMotionTransition(prefersReducedMotion, {
+              duration: 0.3,
+            })}
+            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
+        {/* Mobile Menu Sidebar */}
+        <motion.div
+          initial={{ x: "100%" }}
+          animate={{ x: isMobileMenuOpen ? 0 : "100%" }}
+          transition={getReducedMotionTransition(prefersReducedMotion, {
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          })}
+          className="lg:hidden fixed top-0 right-0 bottom-0 w-[280px] z-50 shadow-2xl bg-[#F9F9FA] dark:bg-[#1a1a24]"
+        >
+          <div className="flex flex-col h-full max-h-screen">
+            {/* Menu Header */}
+            <div className="flex items-center justify-between p-6 pr-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+              <Logo />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 mr-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <X className="h-5 w-5" />
+                <span className="sr-only">Close menu</span>
+              </Button>
+            </div>
+
+            {/* Menu Content */}
+            <nav className="flex-1 px-6 py-8 overflow-y-auto min-h-0">
+              <motion.div
+                initial="initial"
+                animate="animate"
+                variants={staggerContainer}
+                className="flex flex-col gap-2"
+              >
+                <motion.div variants={fadeInUp}>
+                  <Link
+                    href="#features"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Features
+                  </Link>
+                </motion.div>
+                <motion.div variants={fadeInUp}>
+                  <Link
+                    href="#how-it-works"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    How It Works
+                  </Link>
+                </motion.div>
+                <motion.div variants={fadeInUp}>
+                  <Link
+                    href="#testimonials"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Testimonials
+                  </Link>
+                </motion.div>
+                <motion.div variants={fadeInUp}>
+                  <Link
+                    href="#pricing"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Pricing
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </nav>
+
+            {/* Menu Footer with Buttons - Always visible at bottom */}
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 space-y-3 flex-shrink-0 bg-[#F9F9FA] dark:bg-[#1a1a24]">
+              <Button
+                variant="outline"
+                size="default"
+                asChild
+                className="w-full justify-center h-11"
+              >
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                  Log In
+                </Link>
+              </Button>
+              <Button size="default" className="w-full shadow-lg h-11" asChild>
+                <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </motion.div>
 
         <main className="flex-1">
           {/* Hero Section */}
@@ -346,6 +492,7 @@ export default function LandingPage() {
                     )}
                   >
                     <motion.div
+                      style={{ borderRadius: "1rem", overflow: "hidden" }}
                       whileHover={
                         prefersReducedMotion
                           ? {}
@@ -368,6 +515,7 @@ export default function LandingPage() {
                       </Button>
                     </motion.div>
                     <motion.div
+                      style={{ borderRadius: "1rem", overflow: "hidden" }}
                       whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
                       whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                       transition={getReducedMotionTransition(
@@ -1156,6 +1304,7 @@ export default function LandingPage() {
 
                 {/* Button with pulse animation and enhanced hover effect */}
                 <motion.div
+                  style={{ borderRadius: "1rem", overflow: "hidden" }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
@@ -1467,8 +1616,10 @@ export default function LandingPage() {
         {/* Chatbot Widget */}
         {!isChatOpen ? (
           <motion.div
-            className="fixed bottom-6 right-6 z-50"
-            whileHover={prefersReducedMotion ? {} : { scale: 1.1 }}
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100]"
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
             whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
             transition={getReducedMotionTransition(prefersReducedMotion, {
               duration: 0.2,
@@ -1477,9 +1628,9 @@ export default function LandingPage() {
             <Button
               onClick={() => setIsChatOpen(true)}
               size="lg"
-              className="h-16 w-16 rounded-full shadow-2xl [&_svg]:size-10"
+              className="h-14 w-14 md:h-16 md:w-16 rounded-full shadow-xl [&_svg]:size-10"
             >
-              <Bot className="!h-8 !w-8" />
+              <Bot className="!h-7 !w-7 md:!h-8 md:!w-8" />
             </Button>
           </motion.div>
         ) : (
@@ -1491,9 +1642,9 @@ export default function LandingPage() {
               duration: 0.3,
               ease: "easeOut",
             })}
-            className="fixed bottom-6 right-6 z-50"
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100] w-[calc(100vw-2rem)] sm:w-[400px] max-w-[400px]"
           >
-            <Card className="w-[400px] h-[600px] shadow-2xl flex flex-col border-0 overflow-hidden rounded-3xl">
+            <Card className="w-full h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col border-0 overflow-hidden rounded-3xl">
               {/* Chat Header */}
               <div className="flex items-center justify-between p-5 bg-primary text-primary-foreground rounded-t-3xl">
                 <div className="flex items-center gap-3">
