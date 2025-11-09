@@ -137,6 +137,10 @@ h6 {
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+  html {
+    overflow-x: hidden;
   }
 }
 
@@ -151,6 +155,36 @@ h6 {
     opacity: 1;
     pointer-events: auto;
     transition: opacity 300ms ease-in-out;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+@layer base {
+  .container {
+    @apply max-w-full;
+  }
+
+  /* Ensure all sections don't overflow */
+  section {
+    overflow-x: hidden;
+  }
+
+  /* Fix for images and other elements - but not icons inside buttons */
+  img,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* SVG sizing - exclude button and link icons */
+  svg:not(button svg):not(button * svg):not(a svg):not(a * svg) {
+    max-width: 100%;
+    height: auto;
   }
 }
 

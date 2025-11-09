@@ -21,6 +21,7 @@ import {
   Bot,
   X,
   Send,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,6 +53,7 @@ export default function LandingPage() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<
     Array<{ role: "user" | "bot"; content: string }>
   >([
@@ -81,6 +83,19 @@ export default function LandingPage() {
 
     return () => clearTimeout(loadTimer);
   }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
 
   const suggestedQuestions = [
     { icon: "💳", text: "How does HisaabScore work?" },
@@ -185,6 +200,8 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center justify-center">
             <Logo />
           </Link>
+
+          {/* Desktop Navigation */}
           <nav className="ml-auto hidden lg:flex gap-8 mr-8">
             <motion.div
               style={{ borderRadius: "1rem", overflow: "hidden" }}
@@ -243,7 +260,9 @@ export default function LandingPage() {
               </Link>
             </motion.div>
           </nav>
-          <div className="ml-auto lg:ml-0 flex items-center gap-3">
+
+          {/* Desktop Actions */}
+          <div className="ml-auto lg:ml-0 hidden lg:flex items-center gap-3">
             <motion.div
               style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
@@ -280,7 +299,94 @@ export default function LandingPage() {
             </motion.div>
             <ThemeToggle />
           </div>
+
+          {/* Mobile Actions */}
+          <div className="ml-auto flex lg:hidden items-center gap-3">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden"
+            >
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
         </motion.header>
+
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Mobile Menu */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed top-20 left-0 right-0 z-50 lg:hidden bg-background border-b shadow-lg max-h-[calc(100vh-5rem)] overflow-y-auto"
+            >
+              <nav className="container px-4 py-6 flex flex-col gap-4">
+                <Link
+                  href="#features"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  How It Works
+                </Link>
+                <Link
+                  href="#testimonials"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Testimonials
+                </Link>
+                <Link
+                  href="#pricing"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <div className="flex flex-col gap-3 pt-4 border-t">
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Log In
+                    </Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link
+                      href="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Get Started
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </nav>
+            </motion.div>
+          </>
+        )}
 
         <main className="flex-1">
           {/* Hero Section */}
