@@ -326,7 +326,7 @@ export default function DashboardPage() {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide group-hover:text-white/80 transition-colors duration-300">
               Total Income
             </p>
-            <div className="text-3xl font-bold group-hover:text-white transition-colors duration-300">
+            <div className="text-2xl sm:text-3xl font-bold group-hover:text-white transition-colors duration-300 break-words">
               {formatCurrency(totalIncome)}
             </div>
             <p className="text-xs text-green-600 flex items-center gap-1 group-hover:text-white/90 transition-colors duration-300">
@@ -350,7 +350,7 @@ export default function DashboardPage() {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide group-hover:text-white/80 transition-colors duration-300">
               Total Expense
             </p>
-            <div className="text-3xl font-bold group-hover:text-white transition-colors duration-300">
+            <div className="text-2xl sm:text-3xl font-bold group-hover:text-white transition-colors duration-300 break-words">
               {formatCurrency(totalExpense)}
             </div>
             <p className="text-xs text-red-600 flex items-center gap-1 group-hover:text-white/90 transition-colors duration-300">
@@ -375,7 +375,7 @@ export default function DashboardPage() {
               Total Savings
             </p>
             <div
-              className={`text-3xl font-bold group-hover:text-white transition-colors duration-300 ${
+              className={`text-2xl sm:text-3xl font-bold group-hover:text-white transition-colors duration-300 break-words ${
                 netProfit >= 0 ? "text-foreground" : "text-red-600"
               }`}
             >
@@ -410,7 +410,7 @@ export default function DashboardPage() {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide group-hover:text-white/80 transition-colors duration-300">
               Credit Score
             </p>
-            <div className="text-3xl font-bold text-blue-600 group-hover:text-white transition-colors duration-300">
+            <div className="text-2xl sm:text-3xl font-bold text-blue-600 group-hover:text-white transition-colors duration-300">
               {creditScore}
             </div>
             <p className="text-xs text-blue-600 flex items-center gap-1 group-hover:text-white/90 transition-colors duration-300">
@@ -434,7 +434,7 @@ export default function DashboardPage() {
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide group-hover:text-white/80 transition-colors duration-300">
               Pending
             </p>
-            <div className="text-3xl font-bold text-orange-600 group-hover:text-white transition-colors duration-300">
+            <div className="text-2xl sm:text-3xl font-bold text-orange-600 group-hover:text-white transition-colors duration-300">
               {pendingTransactions}
             </div>
             <p className="text-xs text-orange-600 flex items-center gap-1 group-hover:text-white/90 transition-colors duration-300">
@@ -659,30 +659,71 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {categoryData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={(entry) => entry.name}
-                  >
-                    {categoryData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
+              <div className="flex items-center gap-8">
+                <div className="flex-1">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={categoryData.slice(0, 6)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ percent }) =>
+                          `${(percent * 100).toFixed(0)}%`
+                        }
+                        labelLine={false}
+                      >
+                        {categoryData.slice(0, 6).map((_, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value) => formatCurrency(Number(value))}
+                        contentStyle={{
+                          borderRadius: "8px",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
                       />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value) => formatCurrency(Number(value))}
-                    contentStyle={{ borderRadius: "8px" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex-1 space-y-4">
+                  {categoryData.slice(0, 6).map((item: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{
+                            backgroundColor: COLORS[index % COLORS.length],
+                          }}
+                        />
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {item.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-bold">
+                          {formatCurrency(item.value)}
+                        </span>
+                        {item.type === "income" ? (
+                          <TrendingUp className="h-4 w-4 text-green-600" />
+                        ) : (
+                          <TrendingDown className="h-4 w-4 text-red-600" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : (
               <div className="flex items-center justify-center h-[300px] text-muted-foreground">
                 <div className="text-center">
@@ -705,40 +746,67 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {expenseBreakdown.length > 0 ? (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={expenseBreakdown}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={(entry) =>
-                      `${entry.name}: ${(
-                        (entry.value /
-                          expenseBreakdown.reduce(
-                            (sum: number, item: any) => sum + item.value,
-                            0
-                          )) *
-                        100
-                      ).toFixed(0)}%`
-                    }
-                  >
-                    {expenseBreakdown.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
+              <div className="flex items-center gap-8">
+                <div className="flex-1">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={expenseBreakdown}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label={({ percent }) =>
+                          `${(percent * 100).toFixed(0)}%`
+                        }
+                        labelLine={false}
+                      >
+                        {expenseBreakdown.map((_, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={COLORS[index % COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value) => formatCurrency(Number(value))}
+                        contentStyle={{
+                          borderRadius: "8px",
+                          fontFamily: "'Poppins', sans-serif",
+                        }}
                       />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(value) => formatCurrency(Number(value))}
-                    contentStyle={{ borderRadius: "8px" }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex-1 space-y-4">
+                  {expenseBreakdown.map((item: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-4 h-4 rounded-full"
+                          style={{
+                            backgroundColor: COLORS[index % COLORS.length],
+                          }}
+                        />
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {item.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-bold">
+                          {formatCurrency(item.value)}
+                        </span>
+                        <TrendingDown className="h-4 w-4 text-red-600" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : (
               <div className="flex items-center justify-center h-[300px] text-muted-foreground">
                 <div className="text-center">
