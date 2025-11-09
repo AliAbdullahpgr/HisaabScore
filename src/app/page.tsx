@@ -187,6 +187,7 @@ export default function LandingPage() {
           </Link>
           <nav className="ml-auto hidden lg:flex gap-8 mr-8">
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -200,6 +201,7 @@ export default function LandingPage() {
               </Link>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -213,6 +215,7 @@ export default function LandingPage() {
               </Link>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -226,6 +229,7 @@ export default function LandingPage() {
               </Link>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
                 duration: 0.2,
@@ -241,6 +245,7 @@ export default function LandingPage() {
           </nav>
           <div className="ml-auto lg:ml-0 flex items-center gap-3">
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
               transition={getReducedMotionTransition(prefersReducedMotion, {
@@ -252,6 +257,7 @@ export default function LandingPage() {
               </Button>
             </motion.div>
             <motion.div
+              style={{ borderRadius: "1rem", overflow: "hidden" }}
               whileHover={
                 prefersReducedMotion
                   ? {}
@@ -346,6 +352,7 @@ export default function LandingPage() {
                     )}
                   >
                     <motion.div
+                      style={{ borderRadius: "1rem", overflow: "hidden" }}
                       whileHover={
                         prefersReducedMotion
                           ? {}
@@ -368,6 +375,7 @@ export default function LandingPage() {
                       </Button>
                     </motion.div>
                     <motion.div
+                      style={{ borderRadius: "1rem", overflow: "hidden" }}
                       whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
                       whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
                       transition={getReducedMotionTransition(
@@ -1156,6 +1164,7 @@ export default function LandingPage() {
 
                 {/* Button with pulse animation and enhanced hover effect */}
                 <motion.div
+                  style={{ borderRadius: "1rem", overflow: "hidden" }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
@@ -1467,6 +1476,7 @@ export default function LandingPage() {
         {/* Chatbot Widget */}
         {!isChatOpen ? (
           <motion.div
+            style={{ borderRadius: "9999px", overflow: "hidden" }}
             className="fixed bottom-6 right-6 z-50"
             whileHover={prefersReducedMotion ? {} : { scale: 1.1 }}
             whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
