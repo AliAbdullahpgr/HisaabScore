@@ -84,16 +84,17 @@ export default function LandingPage() {
     return () => clearTimeout(loadTimer);
   }, []);
 
-  // Close mobile menu on resize to desktop
+  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024 && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-      }
-    };
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [isMobileMenuOpen]);
 
   const suggestedQuestions = [
@@ -305,122 +306,87 @@ export default function LandingPage() {
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden"
             >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
+              <Menu className="h-6 w-6" />
             </Button>
           </div>
         </motion.header>
 
         {/* Mobile Menu Overlay */}
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={getReducedMotionTransition(prefersReducedMotion, {
-              duration: 0.3,
-            })}
-            className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Mobile Menu */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed top-20 left-0 right-0 z-50 lg:hidden bg-background border-b shadow-lg max-h-[calc(100vh-5rem)] overflow-y-auto"
+            >
+              <nav className="container px-4 py-6 flex flex-col gap-4">
+                <Link
+                  href="#features"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  How It Works
+                </Link>
+                <Link
+                  href="#testimonials"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Testimonials
+                </Link>
+                <Link
+                  href="#pricing"
+                  className="text-base font-medium hover:text-primary transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <div className="flex flex-col gap-3 pt-4 border-t">
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Log In
+                    </Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link
+                      href="/signup"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Get Started
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </nav>
+            </motion.div>
+          </>
         )}
-
-        {/* Mobile Menu Sidebar */}
-        <motion.div
-          initial={{ x: "100%" }}
-          animate={{ x: isMobileMenuOpen ? 0 : "100%" }}
-          transition={getReducedMotionTransition(prefersReducedMotion, {
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1],
-          })}
-          className="lg:hidden fixed top-0 right-0 bottom-0 w-[280px] z-50 shadow-2xl bg-[#F9F9FA] dark:bg-[#1a1a24]"
-        >
-          <div className="flex flex-col h-full max-h-screen">
-            {/* Menu Header */}
-            <div className="flex items-center justify-between p-6 pr-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
-              <Logo />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 mr-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <X className="h-5 w-5" />
-                <span className="sr-only">Close menu</span>
-              </Button>
-            </div>
-
-            {/* Menu Content */}
-            <nav className="flex-1 px-6 py-8 overflow-y-auto min-h-0">
-              <motion.div
-                initial="initial"
-                animate="animate"
-                variants={staggerContainer}
-                className="flex flex-col gap-2"
-              >
-                <motion.div variants={fadeInUp}>
-                  <Link
-                    href="#features"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Features
-                  </Link>
-                </motion.div>
-                <motion.div variants={fadeInUp}>
-                  <Link
-                    href="#how-it-works"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    How It Works
-                  </Link>
-                </motion.div>
-                <motion.div variants={fadeInUp}>
-                  <Link
-                    href="#testimonials"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Testimonials
-                  </Link>
-                </motion.div>
-                <motion.div variants={fadeInUp}>
-                  <Link
-                    href="#pricing"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Pricing
-                  </Link>
-                </motion.div>
-              </motion.div>
-            </nav>
-
-            {/* Menu Footer with Buttons - Always visible at bottom */}
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 space-y-3 flex-shrink-0 bg-[#F9F9FA] dark:bg-[#1a1a24]">
-              <Button
-                variant="outline"
-                size="default"
-                asChild
-                className="w-full justify-center h-11"
-              >
-                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                  Log In
-                </Link>
-              </Button>
-              <Button size="default" className="w-full shadow-lg h-11" asChild>
-                <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </motion.div>
 
         <main className="flex-1">
           {/* Hero Section */}
