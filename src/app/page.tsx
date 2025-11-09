@@ -402,7 +402,7 @@ export default function LandingPage() {
                 <motion.div
                   className="flex flex-col justify-center space-y-8"
                   initial="initial"
-                  animate="animate"
+                  animate={isLoading ? "initial" : "animate"}
                   variants={staggerContainer}
                 >
                   <div className="space-y-6">
@@ -512,7 +512,11 @@ export default function LandingPage() {
                     <motion.div
                       className="flex flex-col"
                       initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      animate={
+                        isLoading
+                          ? { opacity: 0, scale: 0.8 }
+                          : { opacity: 1, scale: 1 }
+                      }
                       transition={getReducedMotionTransition(
                         prefersReducedMotion,
                         { duration: 0.4, delay: 0.5, ease: "easeOut" }
@@ -528,7 +532,11 @@ export default function LandingPage() {
                     <motion.div
                       className="flex flex-col"
                       initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      animate={
+                        isLoading
+                          ? { opacity: 0, scale: 0.8 }
+                          : { opacity: 1, scale: 1 }
+                      }
                       transition={getReducedMotionTransition(
                         prefersReducedMotion,
                         { duration: 0.4, delay: 0.6, ease: "easeOut" }
@@ -542,7 +550,11 @@ export default function LandingPage() {
                     <motion.div
                       className="flex flex-col"
                       initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
+                      animate={
+                        isLoading
+                          ? { opacity: 0, scale: 0.8 }
+                          : { opacity: 1, scale: 1 }
+                      }
                       transition={getReducedMotionTransition(
                         prefersReducedMotion,
                         { duration: 0.4, delay: 0.7, ease: "easeOut" }
