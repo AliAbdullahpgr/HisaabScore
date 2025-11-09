@@ -659,16 +659,16 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {categoryData.length > 0 ? (
-              <div className="flex items-center gap-8">
-                <div className="flex-1">
-                  <ResponsiveContainer width="100%" height={300}>
+              <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+                <div className="w-full lg:flex-1">
+                  <ResponsiveContainer width="100%" height={280}>
                     <PieChart>
                       <Pie
                         data={categoryData.slice(0, 6)}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={120}
+                        innerRadius={50}
+                        outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
                         label={({ percent }) =>
@@ -693,31 +693,31 @@ export default function DashboardPage() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="flex-1 space-y-4">
+                <div className="w-full lg:flex-1 space-y-3">
                   {categoryData.slice(0, 6).map((item: any, index: number) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between"
+                      className="flex items-center justify-between gap-2"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
                         <div
-                          className="w-4 h-4 rounded-full"
+                          className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex-shrink-0"
                           style={{
                             backgroundColor: COLORS[index % COLORS.length],
                           }}
                         />
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate">
                           {item.name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-base font-bold">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                        <span className="text-sm sm:text-base font-bold whitespace-nowrap">
                           {formatCurrency(item.value)}
                         </span>
                         {item.type === "income" ? (
-                          <TrendingUp className="h-4 w-4 text-green-600" />
+                          <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 flex-shrink-0" />
                         ) : (
-                          <TrendingDown className="h-4 w-4 text-red-600" />
+                          <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-red-600 flex-shrink-0" />
                         )}
                       </div>
                     </div>
@@ -746,16 +746,16 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {expenseBreakdown.length > 0 ? (
-              <div className="flex items-center gap-8">
-                <div className="flex-1">
-                  <ResponsiveContainer width="100%" height={300}>
+              <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
+                <div className="w-full lg:flex-1">
+                  <ResponsiveContainer width="100%" height={280}>
                     <PieChart>
                       <Pie
                         data={expenseBreakdown}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={120}
+                        innerRadius={50}
+                        outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
                         label={({ percent }) =>
@@ -780,28 +780,28 @@ export default function DashboardPage() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="flex-1 space-y-4">
+                <div className="w-full lg:flex-1 space-y-3">
                   {expenseBreakdown.map((item: any, index: number) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between"
+                      className="flex items-center justify-between gap-2"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
                         <div
-                          className="w-4 h-4 rounded-full"
+                          className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex-shrink-0"
                           style={{
                             backgroundColor: COLORS[index % COLORS.length],
                           }}
                         />
-                        <span className="text-sm font-medium text-muted-foreground">
+                        <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate">
                           {item.name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-base font-bold">
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                        <span className="text-sm sm:text-base font-bold whitespace-nowrap">
                           {formatCurrency(item.value)}
                         </span>
-                        <TrendingDown className="h-4 w-4 text-red-600" />
+                        <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-red-600 flex-shrink-0" />
                       </div>
                     </div>
                   ))}
