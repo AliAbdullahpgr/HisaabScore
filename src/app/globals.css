@@ -135,6 +135,9 @@ h6 {
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -155,11 +158,11 @@ h6 {
 }
 
 /* Prevent horizontal scroll on mobile */
-@layer base {
-  html,
+@layer utilities {
   body {
     overflow-x: hidden;
     max-width: 100vw;
+    position: relative;
   }
 }
 

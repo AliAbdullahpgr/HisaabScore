@@ -181,7 +181,7 @@ export default function LandingPage() {
     <>
       <LoadingScreen isLoading={isLoading} />
       <div
-        className={`flex flex-col min-h-screen overflow-x-hidden ${
+        className={`flex flex-col min-h-screen ${
           isLoading ? "page-loading" : "page-loaded"
         }`}
       >
