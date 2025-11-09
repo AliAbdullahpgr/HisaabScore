@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Card,
@@ -28,7 +28,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { ReportViewDialog } from '@/components/report-view-dialog';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
@@ -39,9 +39,19 @@ export default function ReportsPage() {
   const firestore = useFirestore();
   
   const creditReportsQuery = useMemoFirebase(() =>
-    user ? query(collection(firestore, 'users', user.uid, 'creditReports'), orderBy('generationDate', 'desc')) : null
+    user ? collection(firestore, 'users', user.uid, 'creditReports') : null
   , [firestore, user]);
-  const { data: creditReports, isLoading: reportsLoading } = useCollection<CreditReport>(creditReportsQuery);
+  const { data: creditReportsRaw, isLoading: reportsLoading } = useCollection<CreditReport>(creditReportsQuery);
+  
+  // Sort in memory instead of using Firestore orderBy to avoid index requirement
+  const creditReports = useMemo(() => {
+    if (!creditReportsRaw) return null;
+    return [...creditReportsRaw].sort((a, b) => {
+      const dateA = new Date(a.generationDate).getTime();
+      const dateB = new Date(b.generationDate).getTime();
+      return dateB - dateA; // Descending order (newest first)
+    });
+  }, [creditReportsRaw]);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedReport, setSelectedReport] = useState<CreditReport | null>(null);

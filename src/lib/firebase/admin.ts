@@ -37,19 +37,7 @@ function initializeAdminApp() {
   return { adminApp, adminDb };
 }
 
-// Lazy initialization - only initialize when actually used
-function getAdminApp(): App {
-  if (!adminApp) {
-    initializeAdminApp();
-  }
-  return adminApp!;
-}
+// Initialize immediately to avoid lazy initialization issues
+initializeAdminApp();
 
-function getAdminDb(): Firestore {
-  if (!adminDb) {
-    initializeAdminApp();
-  }
-  return adminDb!;
-}
-
-export { getAdminApp as adminApp, getAdminDb as adminDb };
+export { adminApp, adminDb };

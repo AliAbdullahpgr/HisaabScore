@@ -29,81 +29,32 @@
  * - CalculateCreditScoreOutput - Output with score, grade, and breakdown
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { saveCreditReport } from '@/lib/firebase/firestore';
-import { CreditReport, Transaction } from '@/lib/types';
-import {z as zod} from 'zod';
+import { CreditReport } from '@/lib/types';
+import { z } from 'zod';
 
 const CalculateCreditScoreInputSchema = z.object({
-  billPaymentHistory: z
-    .number()
-    .min(0)
-    .max(100)
-    .describe(
-      'Payment history for rent, utilities, mobile bills (0-100). Weight: 30%. Most important factor.'
-    ),
-  incomeConsistency: z
-    .number()
-    .min(0)
-    .max(100)
-    .describe(
-      'Regularity and consistency of income patterns (0-100). Weight: 25%. Measures earning stability.'
-    ),
-  expenseManagement: z
-    .number()
-    .min(0)
-    .max(100)
-    .describe(
-      'Expense-to-income ratio and savings behavior (0-100). Weight: 20%. Shows financial discipline.'
-    ),
-  financialGrowth: z
-    .number()
-    .min(0)
-    .max(100)
-    .describe(
-      'Income growth trend over 3-6 months (0-100). Weight: 15%. Indicates improving financial health.'
-    ),
-  transactionDiversity: z
-    .number()
-    .min(0)
-    .max(100)
-    .describe(
-      'Variety of income sources and transaction types (0-100). Weight: 10%. Shows diversified income.'
-    ),
-  transactions: zod.array(zod.any()).optional().describe("Array of transaction objects used for the calculation"),
+  billPaymentHistory: z.number().min(0).max(100),
+  incomeConsistency: z.number().min(0).max(100),
+  expenseManagement: z.number().min(0).max(100),
+  financialGrowth: z.number().min(0).max(100),
+  transactionDiversity: z.number().min(0).max(100),
+  transactions: z.array(z.any()).optional(),
 });
 export type CalculateCreditScoreInput = z.infer<typeof CalculateCreditScoreInputSchema>;
 
 const CalculateCreditScoreOutputSchema = z.object({
-  creditScore: z
-    .number()
-    .min(0)
-    .max(1000)
-    .describe('Alternative Credit Score (0-1000) for informal economy workers.'),
-  riskGrade: z
-    .string()
-    .describe(
-      'Risk grade: A (800+), B+ (700-799), B (600-699), C (500-599), D (<500)'
-    ),
-  scoreBreakdown: z
-    .string()
-    .describe('Detailed breakdown showing how each factor contributed to the final score.'),
-  recommendations: z
-    .string()
-    .describe('Personalized recommendations for improving the alternative credit score.'),
-  scoreType: z
-    .string()
-    .default('Alternative Credit Score')
-    .describe('Type of credit score - always "Alternative Credit Score" for informal economy'),
+  creditScore: z.number().min(0).max(1000),
+  riskGrade: z.string(),
+  scoreBreakdown: z.string(),
+  recommendations: z.string(),
+  scoreType: z.string().default('Alternative Credit Score'),
 });
 export type CalculateCreditScoreOutput = z.infer<typeof CalculateCreditScoreOutputSchema>;
 
-const prompt = ai.definePrompt({
-  name: 'calculateCreditScorePrompt',
-  input: {schema: CalculateCreditScoreInputSchema},
-  output: {schema: CalculateCreditScoreOutputSchema},
-  prompt: `You are an AI credit analyst specializing in Alternative Credit Scoring for the informal economy.
+function buildPrompt(input: CalculateCreditScoreInput): string {
+  return `You are an AI credit analyst specializing in Alternative Credit Scoring for the informal economy.
 
   IMPORTANT: This is NOT a traditional FICO score. This is an Alternative Credit Score designed for:
   - Gig workers and freelancers
@@ -134,11 +85,11 @@ const prompt = ai.definePrompt({
      - D (<500): Poor - High risk
 
   Input Scores:
-  Bill Payment History: {{{billPaymentHistory}}} (Weight: 30%)
-  Income Consistency: {{{incomeConsistency}}} (Weight: 25%)
-  Expense Management: {{{expenseManagement}}} (Weight: 20%)
-  Financial Growth: {{{financialGrowth}}} (Weight: 15%)
-  Transaction Diversity: {{{transactionDiversity}}} (Weight: 10%)
+  Bill Payment History: ${input.billPaymentHistory} (Weight: 30%)
+  Income Consistency: ${input.incomeConsistency} (Weight: 25%)
+  Expense Management: ${input.expenseManagement} (Weight: 20%)
+  Financial Growth: ${input.financialGrowth} (Weight: 15%)
+  Transaction Diversity: ${input.transactionDiversity} (Weight: 10%)
 
   Tasks:
   1. Calculate the Alternative Credit Score (0-1000)
@@ -153,59 +104,125 @@ const prompt = ai.definePrompt({
      - Explain potential score improvement
   5. Include 'scoreType': 'Alternative Credit Score' in response
 
-  Return data in JSON format matching the schema.
-`,
-});
-
-const calculateCreditScoreFlow = ai.defineFlow(
+  Return data in JSON format with these exact fields:
   {
-    name: 'calculateCreditScoreFlow',
-    inputSchema: CalculateCreditScoreInputSchema,
-    outputSchema: CalculateCreditScoreOutputSchema,
-  },
-  async (input: CalculateCreditScoreInput) => {
-    const {output} = await prompt(input);
-    return output!;
+    "creditScore": number (0-1000),
+    "riskGrade": string (A/B+/B/C/D),
+    "scoreBreakdown": string (detailed explanation),
+    "recommendations": string (actionable advice),
+    "scoreType": "Alternative Credit Score"
   }
-);
+`;
+}
 
+// List of models to try in order of preference
+const GEMINI_MODELS = [
+  'gemini-2.0-flash-exp',
+  'gemini-2.5-flash',
+  'gemini-flash-latest',
+  'gemini-2.0-flash',
+];
+
+async function generateWithFallback(
+  genAI: GoogleGenerativeAI,
+  prompt: string
+): Promise<string> {
+  let lastError: Error | null = null;
+
+  for (const modelName of GEMINI_MODELS) {
+    try {
+      console.log(`[Calculate Credit Score] Trying model: ${modelName}`);
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: {
+          temperature: 0.7,
+          topP: 0.95,
+          topK: 40,
+          maxOutputTokens: 2048,
+          responseMimeType: 'application/json',
+        },
+      });
+
+      const result = await model.generateContent(prompt);
+      const response = result.response.text();
+      console.log(`[Calculate Credit Score] Success with model: ${modelName}`);
+      return response;
+    } catch (error: any) {
+      console.log(`[Calculate Credit Score] Model ${modelName} failed:`, error.message);
+      lastError = error;
+      // Continue to next model
+    }
+  }
+
+  // If all models failed, throw the last error
+  throw new Error(
+    `All Gemini models failed. Last error: ${lastError?.message || 'Unknown error'}`
+  );
+}
 
 export async function calculateCreditScore(
   input: CalculateCreditScoreInput,
   userId: string
 ): Promise<CalculateCreditScoreOutput> {
-  const output = await calculateCreditScoreFlow(input);
-  
-  if (userId && output) {
-    const reportToSave: Omit<CreditReport, 'id'> = {
-      generationDate: new Date().toISOString(),
-      score: output.creditScore,
-      grade: output.riskGrade as 'A' | 'B' | 'C' | 'D',
-      url: '', // PDF generation and upload to Storage would be a separate step
-    };
+  try {
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
     
-    // Extract factors from the input for storage
-    const factors = {
-      billPaymentHistory: input.billPaymentHistory,
-      incomeConsistency: input.incomeConsistency,
-      expenseManagement: input.expenseManagement,
-      financialGrowth: input.financialGrowth,
-      transactionDiversity: input.transactionDiversity,
-    };
-    
-    // Determine date range from transactions if available
-    const periodStart = input.transactions?.[0]?.date || '';
-    const periodEnd = input.transactions?.[input.transactions.length - 1]?.date || '';
+    if (!apiKey) {
+      throw new Error('GOOGLE_GENAI_API_KEY is not configured');
+    }
 
-    await saveCreditReport(
-      userId,
-      reportToSave,
-      factors,
-      input.transactions?.length || 0,
-      periodStart,
-      periodEnd
-    );
+    console.log('[Calculate Credit Score] Initializing Google AI...');
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    const prompt = buildPrompt(input);
+    console.log('[Calculate Credit Score] Sending request to Gemini...');
+    
+    const response = await generateWithFallback(genAI, prompt);
+    
+    console.log('[Calculate Credit Score] Received response:', response.substring(0, 200));
+    
+    // Parse the JSON response
+    const output = JSON.parse(response) as CalculateCreditScoreOutput;
+    
+    // Validate the output
+    const validated = CalculateCreditScoreOutputSchema.parse(output);
+    console.log('[Calculate Credit Score] Validated output:', validated);
+
+    // Save the report to Firestore
+    if (userId && validated) {
+      console.log('[Calculate Credit Score] Saving report to Firestore...');
+      const reportToSave: Omit<CreditReport, 'id'> = {
+        generationDate: new Date().toISOString(),
+        score: validated.creditScore,
+        grade: validated.riskGrade as 'A' | 'B' | 'C' | 'D',
+        url: '',
+      };
+
+      const factors = {
+        billPaymentHistory: input.billPaymentHistory,
+        incomeConsistency: input.incomeConsistency,
+        expenseManagement: input.expenseManagement,
+        financialGrowth: input.financialGrowth,
+        transactionDiversity: input.transactionDiversity,
+      };
+
+      const periodStart = input.transactions?.[0]?.date || '';
+      const periodEnd = input.transactions?.[input.transactions.length - 1]?.date || '';
+
+      await saveCreditReport(
+        userId,
+        reportToSave,
+        factors,
+        input.transactions?.length || 0,
+        periodStart,
+        periodEnd
+      );
+      console.log('[Calculate Credit Score] Report saved successfully');
+    }
+
+    return validated;
+  } catch (error) {
+    console.error('[Calculate Credit Score] Error:', error);
+    throw error;
   }
-  
-  return output;
 }

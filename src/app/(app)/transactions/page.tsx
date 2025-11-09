@@ -39,6 +39,7 @@ import {
 import { collection } from 'firebase/firestore';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
 import { Loader2 } from 'lucide-react';
+import { AddTransactionDialog } from '@/components/add-transaction-dialog';
 
 function TransactionsPageContent() {
   const { user, isUserLoading } = useUser();
@@ -177,10 +178,15 @@ function TransactionsPageContent() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Transactions</CardTitle>
-        <CardDescription>
-          View and manage all your income and expenses.
-        </CardDescription>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <CardTitle className="font-headline">Transactions</CardTitle>
+            <CardDescription>
+              View and manage all your income and expenses.
+            </CardDescription>
+          </div>
+          {user && <AddTransactionDialog userId={user.uid} />}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col sm:flex-row gap-4 mb-6">

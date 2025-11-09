@@ -29,6 +29,7 @@ import {
   Clock,
   X,
   Loader2,
+  Plus,
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
@@ -37,6 +38,7 @@ import { extractTransactionsFromDocument } from '@/ai/flows/extract-transactions
 import { createDocument, updateDocumentStatus } from '@/lib/firebase/firestore';
 import { collection, query, where, orderBy } from 'firebase/firestore';
 import { useFirestore, useUser, useCollection, useMemoFirebase } from '@/firebase';
+import { AddTransactionDialog } from '@/components/add-transaction-dialog';
 
 export default function DocumentsPage() {
   const { user, isUserLoading } = useUser();
@@ -329,10 +331,21 @@ export default function DocumentsPage() {
               </span>
             </div>
           </div>
-          <Button className="w-full" size="lg" disabled>
-            <Camera className="mr-2 h-5 w-5" />
-            Use Camera to Scan (Coming Soon)
-          </Button>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Button className="w-full" size="lg" disabled>
+              <Camera className="mr-2 h-5 w-5" />
+              Use Camera to Scan (Coming Soon)
+            </Button>
+            {user && (
+              <AddTransactionDialog userId={user.uid}>
+                <Button className="w-full" size="lg" variant="outline">
+                  <Plus className="mr-2 h-5 w-5" />
+                  Add Manual Transaction
+                </Button>
+              </AddTransactionDialog>
+            )}
+          </div>
         </CardContent>
       </Card>
 

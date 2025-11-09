@@ -8,8 +8,16 @@
  * CategorizeTransactionOutput - The return type for the categorizeTransaction function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { z } from 'zod';
+
+// List of models to try in order of preference
+const GEMINI_MODELS = [
+  'gemini-2.0-flash-exp',
+  'gemini-2.5-flash',
+  'gemini-flash-latest',
+  'gemini-2.0-flash',
+];
 
 const CategorizeTransactionInputSchema = z.object({
   merchantName: z.string().describe('The name of the merchant or vendor.'),
@@ -38,35 +46,79 @@ const CategorizeTransactionOutputSchema = z.object({
 });
 export type CategorizeTransactionOutput = z.infer<typeof CategorizeTransactionOutputSchema>;
 
-export async function categorizeTransaction(input: CategorizeTransactionInput): Promise<CategorizeTransactionOutput> {
-  return categorizeTransactionFlow(input);
+function buildPrompt(input: CategorizeTransactionInput): string {
+  return `You are a personal finance assistant that specializes in categorizing transactions.
+
+Given the following transaction information, determine the most appropriate category and subcategory.
+Also assign a confidence level (0-1) for your categorization.
+
+Merchant Name: ${input.merchantName}
+Amount: ${input.amount}
+Description: ${input.description}
+
+Return JSON in this exact format:
+{
+  "category": "one of: income, expenses, sales, services, gig_work, remittances, inventory, rent, utilities, transport, food, supplies",
+  "subcategory": "specific subcategory",
+  "confidenceLevel": number between 0 and 1
+}`;
 }
 
-const categorizeTransactionPrompt = ai.definePrompt({
-  name: 'categorizeTransactionPrompt',
-  input: {schema: CategorizeTransactionInputSchema},
-  output: {schema: CategorizeTransactionOutputSchema},
-  prompt: `You are a personal finance assistant that specializes in categorizing transactions.
+async function categorizeWithFallback(
+  genAI: GoogleGenerativeAI,
+  input: CategorizeTransactionInput
+): Promise<string> {
+  let lastError: Error | null = null;
+  const prompt = buildPrompt(input);
 
-  Given the following transaction information, determine the most appropriate category and subcategory.
-  Also assign a confidence level (0-1) for your categorization.
+  for (const modelName of GEMINI_MODELS) {
+    try {
+      console.log(`[Categorize Transaction] Trying model: ${modelName}`);
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+        generationConfig: {
+          temperature: 0.5,
+          topP: 0.95,
+          topK: 40,
+          maxOutputTokens: 512,
+          responseMimeType: 'application/json',
+        },
+      });
 
-  Merchant Name: {{{merchantName}}}
-  Amount: {{{amount}}}
-  Description: {{{description}}}
-
-  Respond in JSON format.
-  `,
-});
-
-const categorizeTransactionFlow = ai.defineFlow(
-  {
-    name: 'categorizeTransactionFlow',
-    inputSchema: CategorizeTransactionInputSchema,
-    outputSchema: CategorizeTransactionOutputSchema,
-  },
-  async input => {
-    const {output} = await categorizeTransactionPrompt(input);
-    return output!;
+      const result = await model.generateContent(prompt);
+      const response = result.response.text();
+      console.log(`[Categorize Transaction] Success with model: ${modelName}`);
+      return response;
+    } catch (error: any) {
+      console.log(`[Categorize Transaction] Model ${modelName} failed:`, error.message);
+      lastError = error;
+    }
   }
-);
+
+  throw new Error(
+    `All Gemini models failed. Last error: ${lastError?.message || 'Unknown error'}`
+  );
+}
+
+export async function categorizeTransaction(input: CategorizeTransactionInput): Promise<CategorizeTransactionOutput> {
+  try {
+    const apiKey = process.env.GOOGLE_GENAI_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error('GOOGLE_GENAI_API_KEY is not configured');
+    }
+
+    console.log('[Categorize Transaction] Initializing Google AI...');
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    const response = await categorizeWithFallback(genAI, input);
+    const output = JSON.parse(response) as CategorizeTransactionOutput;
+    
+    // Validate the output
+    const validated = CategorizeTransactionOutputSchema.parse(output);
+    return validated;
+  } catch (error) {
+    console.error('[Categorize Transaction] Error:', error);
+    throw error;
+  }
+}

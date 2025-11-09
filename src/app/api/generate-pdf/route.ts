@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     // Step 1: Fetch the credit report from Firestore
     const { adminDb } = await import("@/lib/firebase/admin");
-    const reportDoc = await adminDb()
+    const reportDoc = await adminDb!
       .collection("users")
       .doc(userId)
       .collection("creditReports")
