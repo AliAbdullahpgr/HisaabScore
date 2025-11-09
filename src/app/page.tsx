@@ -181,7 +181,7 @@ export default function LandingPage() {
     <>
       <LoadingScreen isLoading={isLoading} />
       <div
-        className={`flex flex-col min-h-screen ${
+        className={`flex flex-col min-h-screen overflow-x-hidden ${
           isLoading ? "page-loading" : "page-loaded"
         }`}
       >
@@ -338,14 +338,14 @@ export default function LandingPage() {
           })}
           className="lg:hidden fixed top-0 right-0 bottom-0 w-[280px] z-50 shadow-2xl bg-[#F9F9FA] dark:bg-[#1a1a24]"
         >
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full max-h-screen">
             {/* Menu Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between p-6 pr-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
               <Logo />
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9"
+                className="h-9 w-9 mr-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <X className="h-5 w-5" />
@@ -354,7 +354,7 @@ export default function LandingPage() {
             </div>
 
             {/* Menu Content */}
-            <nav className="flex-1 px-6 py-8 overflow-y-auto">
+            <nav className="flex-1 px-6 py-8 overflow-y-auto min-h-0">
               <motion.div
                 initial="initial"
                 animate="animate"
@@ -364,7 +364,7 @@ export default function LandingPage() {
                 <motion.div variants={fadeInUp}>
                   <Link
                     href="#features"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Features
@@ -373,7 +373,7 @@ export default function LandingPage() {
                 <motion.div variants={fadeInUp}>
                   <Link
                     href="#how-it-works"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     How It Works
@@ -382,7 +382,7 @@ export default function LandingPage() {
                 <motion.div variants={fadeInUp}>
                   <Link
                     href="#testimonials"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Testimonials
@@ -391,7 +391,7 @@ export default function LandingPage() {
                 <motion.div variants={fadeInUp}>
                   <Link
                     href="#pricing"
-                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60"
+                    className="block text-base font-medium hover:text-primary transition-colors duration-200 py-3 px-4 rounded-lg hover:bg-white/60 dark:hover:bg-white/10"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Pricing
@@ -400,8 +400,8 @@ export default function LandingPage() {
               </motion.div>
             </nav>
 
-            {/* Menu Footer with Buttons */}
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 space-y-3">
+            {/* Menu Footer with Buttons - Always visible at bottom */}
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700 space-y-3 flex-shrink-0 bg-[#F9F9FA] dark:bg-[#1a1a24]">
               <Button
                 variant="outline"
                 size="default"
@@ -1616,9 +1616,10 @@ export default function LandingPage() {
         {/* Chatbot Widget */}
         {!isChatOpen ? (
           <motion.div
-            style={{ borderRadius: "9999px", overflow: "hidden" }}
-            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[60]"
-            whileHover={prefersReducedMotion ? {} : { scale: 1.1 }}
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100]"
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
             whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
             transition={getReducedMotionTransition(prefersReducedMotion, {
               duration: 0.2,
@@ -1627,7 +1628,7 @@ export default function LandingPage() {
             <Button
               onClick={() => setIsChatOpen(true)}
               size="lg"
-              className="h-14 w-14 md:h-16 md:w-16 rounded-full shadow-2xl [&_svg]:size-10"
+              className="h-14 w-14 md:h-16 md:w-16 rounded-full shadow-xl [&_svg]:size-10"
             >
               <Bot className="!h-7 !w-7 md:!h-8 md:!w-8" />
             </Button>
@@ -1641,9 +1642,9 @@ export default function LandingPage() {
               duration: 0.3,
               ease: "easeOut",
             })}
-            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[60] max-w-[calc(100vw-2rem)] lg:max-w-none"
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[100] w-[calc(100vw-2rem)] sm:w-[400px] max-w-[400px]"
           >
-            <Card className="w-full lg:w-[400px] h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col border-0 overflow-hidden rounded-3xl">
+            <Card className="w-full h-[600px] max-h-[calc(100vh-8rem)] shadow-2xl flex flex-col border-0 overflow-hidden rounded-3xl">
               {/* Chat Header */}
               <div className="flex items-center justify-between p-5 bg-primary text-primary-foreground rounded-t-3xl">
                 <div className="flex items-center gap-3">
